@@ -111,14 +111,28 @@ const knowledgeDialog = document.querySelector('#knowledge-dialog');
 const knowledgeList = document.querySelector('#knowledge-list');
 const knowledgeSearch = document.querySelector('#knowledge-search');
 const knowledgeResultsCount = document.querySelector('#knowledge-results-count');
+const knowledgePageLabel = document.querySelector('#knowledge-page');
+const knowledgePrevious = document.querySelector('#knowledge-prev');
+const knowledgeNext = document.querySelector('#knowledge-next');
+const knowledgePageSize = 40;
 let knowledgeEntries = [];
+let knowledgePage = 0;
 
 function renderKnowledgeEntries() {
   const query = knowledgeSearch.value.trim().toLowerCase();
   const filtered = knowledgeEntries.filter((entry) => !query || (entry.question + ' ' + entry.answer).toLowerCase().includes(query));
+  const pageCount = Math.ceil(filtered.length / knowledgePageSize);
+  knowledgePage = Math.min(knowledgePage, Math.max(0, pageCount - 1));
+  const start = knowledgePage * knowledgePageSize;
+  const pageEntries = filtered.slice(start, start + knowledgePageSize);
   knowledgeList.scrollTop = 0;
-  knowledgeResultsCount.textContent = query ? `${filtered.length} of ${knowledgeEntries.length} topics` : `${knowledgeEntries.length} topics`;
-  knowledgeList.innerHTML = filtered.length ? filtered.map((entry) => {
+  knowledgeResultsCount.textContent = filtered.length
+    ? query ? `${start + 1}–${Math.min(start + knowledgePageSize, filtered.length)} of ${filtered.length} matches` : `${start + 1}–${Math.min(start + knowledgePageSize, filtered.length)} of ${filtered.length} topics`
+    : query ? '0 matching topics' : '0 topics';
+  knowledgePageLabel.textContent = `${pageCount ? knowledgePage + 1 : 0} / ${pageCount}`;
+  knowledgePrevious.disabled = knowledgePage === 0 || pageCount === 0;
+  knowledgeNext.disabled = knowledgePage >= pageCount - 1;
+  knowledgeList.innerHTML = pageEntries.length ? pageEntries.map((entry) => {
     const visual = entry.visual && window.PyPalVisuals ? window.PyPalVisuals.render(entry.visual) : '';
     return '<details class="knowledge-entry"><summary><span>' + escapeHtml(entry.question) + '</span><span class="knowledge-entry-chevron" aria-hidden="true">⌄</span></summary><div class="knowledge-answer"><div class="knowledge-answer-copy">' + formatAnswer(entry.answer) + '</div>' + visual + '<button class="knowledge-ask" type="button" data-ask-question="' + escapeHtml(entry.question) + '">Ask this question <span aria-hidden="true">↗</span></button></div></details>';
   }).join('') : '<div class="knowledge-empty"><strong>No matching topics</strong><span>Try a broader Python term.</span></div>';
@@ -144,7 +158,9 @@ async function openKnowledgeBase() {
 
 document.querySelector('#open-knowledge').addEventListener('click', openKnowledgeBase);
 document.querySelector('#close-knowledge').addEventListener('click', () => knowledgeDialog.close());
-knowledgeSearch.addEventListener('input', renderKnowledgeEntries);
+knowledgeSearch.addEventListener('input', () => { knowledgePage = 0; renderKnowledgeEntries(); });
+knowledgePrevious.addEventListener('click', () => { if (knowledgePage > 0) { knowledgePage -= 1; renderKnowledgeEntries(); } });
+knowledgeNext.addEventListener('click', () => { knowledgePage += 1; renderKnowledgeEntries(); });
 knowledgeList.addEventListener('click', (event) => {
   const askButton = event.target.closest('[data-ask-question]');
   if (askButton) {

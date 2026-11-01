@@ -7,9 +7,9 @@
   <meta name="description" content="A friendly Python programming assistant, powered by a curated local knowledge base.">
   <title>PyPal — Python, made clearer</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/styles.css?v=kb-3">
-  <script src="/visuals.js?v=kb-3" defer></script>
-  <script src="/app.js?v=kb-3" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=kb-4">
+  <script src="/visuals.js?v=kb-4" defer></script>
+  <script src="/app.js?v=kb-4" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -87,7 +87,7 @@
       <button class="icon-button" id="close-knowledge" type="button" aria-label="Close knowledge base" title="Close"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg></button>
     </div>
     <label class="knowledge-search"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><span class="sr-only">Search knowledge base</span><input id="knowledge-search" type="search" placeholder="Search topics and answers…" autocomplete="off"><kbd>⌘ F</kbd></label>
-    <div class="knowledge-results"><span id="knowledge-results-count">Loading topics…</span><span>Click a topic to read its answer</span></div>
+    <div class="knowledge-results"><span id="knowledge-results-count">Loading topics…</span><div class="knowledge-page-controls"><button id="knowledge-prev" type="button" aria-label="Previous topic page" disabled>‹</button><span id="knowledge-page">—</span><button id="knowledge-next" type="button" aria-label="Next topic page" disabled>›</button></div></div>
     <div class="knowledge-list" id="knowledge-list" aria-live="polite"></div>
   </dialog>
 </body>
