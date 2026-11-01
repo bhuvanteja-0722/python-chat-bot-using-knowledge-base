@@ -7,7 +7,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-from chatbot import VISUALS_BY_QUESTION, find_answer, find_entry
+from chatbot import KNOWLEDGE_BASE, VISUALS_BY_QUESTION, find_answer, find_entry
 
 ROOT = Path(__file__).resolve().parent
 
@@ -17,6 +17,26 @@ class ChatHandler(SimpleHTTPRequestHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT / "static"), **kwargs)
+
+    def do_GET(self) -> None:
+        if urlparse(self.path).path == "/api/knowledge":
+            entries = [
+                {
+                    "question": entry.question,
+                    "answer": entry.answer,
+                    "visual": VISUALS_BY_QUESTION.get(entry.question),
+                }
+                for entry in KNOWLEDGE_BASE
+            ]
+            body = json.dumps({"count": len(entries), "entries": entries}).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        super().do_GET()
 
     def do_POST(self) -> None:
         if urlparse(self.path).path != "/api/answer":

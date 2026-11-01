@@ -107,10 +107,66 @@ function resetChat() {
 }
 document.querySelector('#new-chat').addEventListener('click', resetChat);
 document.querySelector('#clear-chat').addEventListener('click', resetChat);
+const knowledgeDialog = document.querySelector('#knowledge-dialog');
+const knowledgeList = document.querySelector('#knowledge-list');
+const knowledgeSearch = document.querySelector('#knowledge-search');
+const knowledgeResultsCount = document.querySelector('#knowledge-results-count');
+let knowledgeEntries = [];
+
+function renderKnowledgeEntries() {
+  const query = knowledgeSearch.value.trim().toLowerCase();
+  const filtered = knowledgeEntries.filter((entry) => !query || (entry.question + ' ' + entry.answer).toLowerCase().includes(query));
+  knowledgeList.scrollTop = 0;
+  knowledgeResultsCount.textContent = query ? `${filtered.length} of ${knowledgeEntries.length} topics` : `${knowledgeEntries.length} topics`;
+  knowledgeList.innerHTML = filtered.length ? filtered.map((entry) => {
+    const visual = entry.visual && window.PyPalVisuals ? window.PyPalVisuals.render(entry.visual) : '';
+    return '<details class="knowledge-entry"><summary><span>' + escapeHtml(entry.question) + '</span><span class="knowledge-entry-chevron" aria-hidden="true">⌄</span></summary><div class="knowledge-answer"><div class="knowledge-answer-copy">' + formatAnswer(entry.answer) + '</div>' + visual + '<button class="knowledge-ask" type="button" data-ask-question="' + escapeHtml(entry.question) + '">Ask this question <span aria-hidden="true">↗</span></button></div></details>';
+  }).join('') : '<div class="knowledge-empty"><strong>No matching topics</strong><span>Try a broader Python term.</span></div>';
+}
+
+async function openKnowledgeBase() {
+  knowledgeDialog.showModal();
+  knowledgeSearch.focus();
+  if (knowledgeEntries.length) return;
+  knowledgeResultsCount.textContent = 'Loading topics…';
+  try {
+    const response = await fetch('/api/knowledge', { cache: 'no-store' });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to load the knowledge base.');
+    knowledgeEntries = data.entries.sort((a, b) => a.question.localeCompare(b.question));
+    document.querySelector('#knowledge-count').textContent = data.count;
+    renderKnowledgeEntries();
+  } catch (error) {
+    knowledgeResultsCount.textContent = 'Could not load topics';
+    knowledgeList.innerHTML = '<div class="knowledge-empty"><strong>Knowledge base unavailable</strong><span>' + escapeHtml(error.message || 'Please try again.') + '</span><button class="knowledge-ask" id="retry-knowledge" type="button">Try again</button></div>';
+  }
+}
+
+document.querySelector('#open-knowledge').addEventListener('click', openKnowledgeBase);
+document.querySelector('#close-knowledge').addEventListener('click', () => knowledgeDialog.close());
+knowledgeSearch.addEventListener('input', renderKnowledgeEntries);
+knowledgeList.addEventListener('click', (event) => {
+  const askButton = event.target.closest('[data-ask-question]');
+  if (askButton) {
+    const question = askButton.dataset.askQuestion;
+    knowledgeDialog.close();
+    ask(question);
+  } else if (event.target.closest('#retry-knowledge')) {
+    knowledgeEntries = [];
+    openKnowledgeBase();
+  }
+});
+knowledgeDialog.addEventListener('click', (event) => {
+  if (event.target === knowledgeDialog) knowledgeDialog.close();
+});
 document.addEventListener('keydown', (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
     event.preventDefault();
     resetChat();
+  }
+  if (knowledgeDialog.open && (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'f') {
+    event.preventDefault();
+    knowledgeSearch.focus();
   }
 });
 updateComposer();

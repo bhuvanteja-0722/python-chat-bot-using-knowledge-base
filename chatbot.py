@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from difflib import get_close_matches
 from dataclasses import dataclass
+from knowledge_expansion import ADDITIONAL_KNOWLEDGE
+from api_knowledge import API_KNOWLEDGE
 
 
 @dataclass(frozen=True)
@@ -231,7 +233,7 @@ def merge_intervals(intervals):
     KnowledgeEntry(
         "How does binary search work?",
         "Binary search finds a value in a sorted sequence by repeatedly halving the search range, taking O(log n) comparisons. The input must already be sorted. Python's `bisect` module provides insertion-point searches for sorted lists.",
-        ("binary", "search", "sorted", "bisect", "logarithmic"), ("binary search", "search a sorted list"),
+        ("binary", "search", "sorted", "bisect", "logarithmic"), ("binary search",),
     ),
     KnowledgeEntry(
         "What is searching in algorithms?",
@@ -241,7 +243,7 @@ def merge_intervals(intervals):
     KnowledgeEntry(
         "How do I sort values in Python?",
         "Use `sorted(values)` to make a new sorted list or `values.sort()` to sort a list in place. Pass `key=` to choose what to compare, and `reverse=True` for descending order. Python's sort is stable.",
-        ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sort a list", "sorting a list", "sort values in python"),
+        ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sorting a list", "sort values in python"),
     ),
     KnowledgeEntry(
         "How do common sorting algorithms compare?",
@@ -627,7 +629,7 @@ def merge_intervals(intervals):
     KnowledgeEntry("What is a property?", "`@property` lets an attribute-style access run getter logic. It can be useful for derived values or validation, but ordinary public attributes are simpler when no extra behavior is needed.", ("property", "getter", "setter", "attribute", "property decorator"), ("python property", "property decorator")),
     KnowledgeEntry("What are dunder methods?", "Dunder methods have double underscores, such as `__init__`, `__str__`, and `__len__`. Python calls them to support object setup, display, and built-in operations. Implement them to make custom objects behave naturally.", ("dunder", "magic", "special", "__init__", "__str__", "method"), ("magic methods", "special methods")),
     KnowledgeEntry("What are type hints?", "Type hints document expected types and help editors and static checkers. They do not usually enforce types at runtime:\n\n```python\ndef greet(name: str) -> str:\n    return f\"Hello, {name}\"\n```", ("typing", "hint", "hints", "annotation", "annotations", "type"), ("type annotation", "function annotation")),
-    KnowledgeEntry("How do match and case work?", "`match` and `case` compare a value against patterns, available in Python 3.10 and newer. They can make structured branching clearer; use ordinary `if` statements for simple conditions.", ("match", "case", "pattern", "structural"), ("pattern matching", "match case")),
+    KnowledgeEntry("How do match and case work?", "`match` and `case` compare a value against patterns, available in Python 3.10 and newer. They can make structured branching clearer; use ordinary `if` statements for simple conditions.", ("match", "case", "pattern", "structural"), ("pattern matching",)),
     KnowledgeEntry("How do I raise an exception?", "Use `raise` to signal an error. Choose a specific built-in exception or define a custom one by subclassing `Exception`. Include a message that explains what went wrong.", ("raise", "custom", "exception", "error"), ("raise an error", "custom exception")),
     KnowledgeEntry("How do I use logging?", "Use the standard `logging` module instead of `print()` for application diagnostics. It supports levels such as `DEBUG`, `INFO`, `WARNING`, and `ERROR`, and can send messages to a file or console.", ("logging", "log", "logger", "debug", "diagnostic"), ("logging module", "log an error")),
     KnowledgeEntry("How do I work with JSON?", "Use `json.loads(text)` to parse JSON text and `json.dumps(value)` to produce JSON text. With files, use `json.load(file)` and `json.dump(value, file)`. JSON supports a limited set of data types.", ("json", "serialize", "serialization", "parse", "loads", "dumps"), ("read json", "write json", "json file")),
@@ -795,11 +797,6 @@ def merge_intervals(intervals):
         ("range", "sum", "query", "prefix", "array", "subarray", "inclusive"), ("range sum query", "prefix sum range query", "sum a range efficiently"),
     ),
     KnowledgeEntry(
-        "How do I find the longest palindromic substring?",
-        "Expand outward from every character and every gap between characters, since palindromes can have odd or even length. Keep the longest matching range seen. This straightforward method takes O(n²) time and O(1) extra space; Manacher's algorithm can do it in O(n) time when needed.",
-        ("longest", "palindrome", "palindromic", "substring", "expand", "center", "string"), ("longest palindromic substring", "find longest palindrome in a string", "palindrome substring algorithm"),
-    ),
-    KnowledgeEntry(
         "How do I use pathlib to work with file paths?",
         "Use `pathlib.Path` to build paths with `/`, inspect them, and read or write files. A `Path` represents a filesystem path without requiring manual separator handling. For example, `Path('data') / 'input.txt'` creates a child path; use `read_text()` or `write_text()` for small text files.",
         ("pathlib", "path", "file", "directory", "filesystem", "read_text", "write_text"), ("python pathlib", "work with file paths", "pathlib path"),
@@ -818,6 +815,66 @@ def merge_intervals(intervals):
         "How do I safely look up a dictionary key with a default?",
         "Use `mapping.get(key, default)` when a missing key should return a fallback instead of raising `KeyError`. Use `key in mapping` when you need to distinguish a missing key from a key whose value is `None`. For nested data, check each level or use a deliberate helper rather than assuming every key exists.",
         ("dictionary", "dict", "lookup", "key", "default", "get", "missing", "keyerror"), ("dict get default", "dictionary default value", "safe dictionary lookup"),
+    ),
+    KnowledgeEntry(
+        "How do I search a rotated sorted array?",
+        "Use modified binary search. At each step, one half is sorted; check whether the target lies inside that half's endpoints, then keep that half or discard it. This takes O(log n) time when values are distinct; duplicates can make some cases O(n).",
+        ("rotated", "sorted", "array", "search", "binary", "target", "pivot"), ("search rotated sorted array", "rotated array search", "binary search rotated array"),
+    ),
+    KnowledgeEntry(
+        "How do I find the longest increasing subsequence?",
+        "For a strictly increasing subsequence in O(n log n), maintain `tails`, where each position stores the smallest possible ending value for a subsequence of that length. For each value, use `bisect_left` to replace the first tail greater than or equal to it. The length of `tails` is the answer; reconstructing the actual subsequence needs parent links too.",
+        ("longest", "increasing", "subsequence", "lis", "bisect", "dynamic", "programming", "tails"), ("longest increasing subsequence", "lis algorithm", "find lis length"),
+    ),
+    KnowledgeEntry(
+        "How do I find the minimum window substring?",
+        "Use a sliding window and a character-count map. Expand the right edge until the window covers all required counts, then move the left edge right while coverage remains valid, recording the smallest valid range. With count maps this is O(n + m) time for source length n and target length m.",
+        ("minimum", "window", "substring", "sliding", "string", "character", "count", "cover"), ("minimum window substring", "smallest substring containing characters", "min window string problem"),
+    ),
+    KnowledgeEntry(
+        "How do I calculate edit distance between two strings?",
+        "Levenshtein edit distance allows insertion, deletion, and substitution. A DP cell for prefixes `i` and `j` is the minimum of deleting, inserting, or substituting/matching the last character. The standard method takes O(mn) time; rolling rows reduce space to O(min(m, n)) when only the distance is needed.",
+        ("edit", "distance", "levenshtein", "string", "insert", "delete", "substitute", "dynamic", "programming"), ("edit distance", "levenshtein distance", "minimum edits between strings"),
+    ),
+    KnowledgeEntry(
+        "How do I merge k sorted lists efficiently?",
+        "Put the first item from each non-empty list into a min-heap along with its list and index. Repeatedly remove the smallest item, append it, and push the next item from that same list. This takes O(N log k) time for N total items and O(k) heap space.",
+        ("merge", "sorted", "lists", "k-way", "heap", "heapq", "priority", "array"), ("merge k sorted lists", "merge multiple sorted arrays", "k way merge"),
+    ),
+    KnowledgeEntry(
+        "How do I use bisect to search a sorted list?",
+        "The `bisect` module finds insertion positions in a sorted sequence in O(log n) time. `bisect_left(values, x)` returns the first position where x can go without breaking order; `bisect_right` returns the position after existing equal values. Inserting into a Python list still costs O(n) because later elements shift.",
+        ("bisect", "binary", "search", "sorted", "insertion", "position", "bisect_left", "bisect_right"), ("python bisect module", "bisect to search a sorted list", "find insertion point in sorted list", "bisect sorted list"),
+    ),
+    KnowledgeEntry(
+        "How do I count items with collections.Counter?",
+        "`collections.Counter` counts hashable values and behaves like a dictionary from item to count: `Counter(words)`. Use `counter.most_common(k)` for the k most frequent items, and `counter[item]` returns zero for an unseen item. For unhashable values, convert them to a hashable key first.",
+        ("counter", "collections", "count", "frequency", "most_common", "hashable", "items"), ("python counter", "count item frequencies", "collections counter"),
+    ),
+    KnowledgeEntry(
+        "How do I group values with defaultdict?",
+        "`collections.defaultdict(list)` creates a new list the first time a key is accessed, which makes grouping concise:\n\n```python\nfrom collections import defaultdict\n\ngroups = defaultdict(list)\nfor item in items:\n    groups[item.category].append(item)\n```\nUse `defaultdict(set)` when duplicates should be removed, or a normal dictionary if missing-key access should remain an error.",
+        ("defaultdict", "group", "grouping", "collections", "list", "dictionary", "dict"), ("group values in python", "defaultdict grouping", "group items by key"),
+    ),
+    KnowledgeEntry(
+        "How do I sort a list of dictionaries by a field?",
+        "Pass a `key` function to `sorted` or `list.sort`. For example, `sorted(records, key=lambda row: row['age'])` sorts by age; add `reverse=True` for descending order. Python's sort is stable, so equal-key items keep their original relative order.",
+        ("sort", "list", "dictionary", "dict", "field", "key", "records", "lambda"), ("sort a list of dictionaries", "sort dictionaries by key", "sort list of dicts", "sort records by field"),
+    ),
+    KnowledgeEntry(
+        "How does match-case work in Python?",
+        "`match` compares a value against `case` patterns and runs the first matching block. It supports literals, sequences, mappings, class patterns, and a fallback `case _:`. Structural pattern matching was added in Python 3.10; use ordinary `if` statements when they make simple conditions clearer.",
+        ("match", "case", "pattern", "structural", "matching", "switch", "python"), ("match case statement", "match case work in python", "python pattern matching", "structural pattern matching"),
+    ),
+    KnowledgeEntry(
+        "What does the walrus operator do in Python?",
+        "The assignment expression `:=` assigns a value as part of a larger expression. For example, `while (line := file.readline()):` reads and tests each line in one condition. Use it sparingly: a separate assignment is often easier to read, and the operator does not replace normal `=` statements.",
+        ("walrus", "operator", "assignment", "expression", "colon", "equals", "python"), ("walrus operator", "assignment expression", "colon equals operator"),
+    ),
+    KnowledgeEntry(
+        "How do I check whether a path exists with pathlib?",
+        "Create a `Path` and call `exists()` to check whether anything is at that path, `is_file()` for a regular file, or `is_dir()` for a directory. The filesystem can change after the check, so still handle `FileNotFoundError` or other `OSError` exceptions when opening or modifying the path.",
+        ("pathlib", "path", "exists", "file", "directory", "is_file", "is_dir", "filesystem"), ("check if file exists python", "path exists pathlib", "check path exists"),
     ),
     KnowledgeEntry(
         "What are common Python collection operation costs?",
@@ -901,7 +958,32 @@ def merge_intervals(intervals):
     ),
 )
 
+KNOWLEDGE_BASE += tuple(
+    KnowledgeEntry(
+        question,
+        answer,
+        tuple(re.findall(r"[a-z0-9_]+", question.lower())),
+    )
+    for question, answer in ADDITIONAL_KNOWLEDGE
+)
+KNOWLEDGE_BASE += tuple(
+    KnowledgeEntry(
+        question,
+        answer,
+        tuple(re.findall(r"[a-z0-9_]+", question.lower())),
+    )
+    for question, answer in API_KNOWLEDGE
+)
+if len(KNOWLEDGE_BASE) != 2000:
+    raise RuntimeError(f"Expected 2000 knowledge entries, found {len(KNOWLEDGE_BASE)}")
+
 VISUALS_BY_QUESTION = {
+    "How do I search a rotated sorted array?": "binary-search",
+    "How do I find the longest increasing subsequence?": "lis",
+    "How do I find the minimum window substring?": "sliding-window",
+    "How do I calculate edit distance between two strings?": "edit-distance",
+    "How do I merge k sorted lists efficiently?": "heap",
+    "How do I use bisect to search a sorted list?": "binary-search",
     "How do I use heapq as a priority queue?": "heap",
     "How do I traverse a binary tree level by level?": "tree-traversal",
     "How do I find the lowest common ancestor in a binary search tree?": "bst",
@@ -998,7 +1080,7 @@ VISUALS_BY_QUESTION = {
     "What is recursion?": "recursion",
 }
 
-STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "structure", "to", "what", "with", "algorithm", "you", "your"}
+STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "doe", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "s", "structure", "to", "what", "with", "algorithm", "you", "your"}
 GENERIC_MATCH_WORDS = {"complexity", "function", "operation", "runtime", "search", "space", "time", "value"}
 
 
@@ -1025,6 +1107,13 @@ def normalize(text: str) -> list[str]:
 
 def find_entry(question: str) -> KnowledgeEntry | None:
     """Find the best matching knowledge entry using phrase and keyword scoring."""
+    normalized_question = " ".join(normalize(question))
+    exact_title = next(
+        (entry for entry in KNOWLEDGE_BASE if " ".join(normalize(entry.question)) == normalized_question),
+        None,
+    )
+    if exact_title:
+        return exact_title
     if re.search(r"\bmap\s*\(", question, re.IGNORECASE):
         return next(entry for entry in KNOWLEDGE_BASE if entry.question == "What does Python's map() function do?")
     words = set(normalize(question)) - STOP_WORDS
