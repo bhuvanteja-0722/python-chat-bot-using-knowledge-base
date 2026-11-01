@@ -15,6 +15,7 @@ class KnowledgeEntry:
     answer: str
     keywords: tuple[str, ...]
     aliases: tuple[str, ...] = ()
+    exact_only: bool = False
 
 
 KNOWLEDGE_BASE = (
@@ -1010,8 +1011,83 @@ KNOWLEDGE_BASE += tuple(
     )
     for question, answer in API_KNOWLEDGE
 )
-if len(KNOWLEDGE_BASE) != 2006:
-    raise RuntimeError(f"Expected 2006 knowledge entries, found {len(KNOWLEDGE_BASE)}")
+
+# Add natural-language forms for 100 frequently useful Python and DSA answers.
+# These entries reuse curated answers; they improve retrieval for everyday
+# phrasing without fabricating or paraphrasing technical facts.
+_COMMON_TERMS = {
+    "python", "string", "list", "tuple", "dict", "dictionary", "set", "function", "loop",
+    "variable", "type", "class", "object", "file", "module", "package", "exception", "error",
+    "queue", "stack", "array", "sort", "search", "algorithm", "complexity",
+    "recursion", "cache", "hash", "iterator", "generator", "async", "test", "debug",
+    "copy", "range", "condition", "import", "path", "json", "csv", "regex", "date", "time",
+    "number", "integer",
+    "float", "boolean", "mutable", "immutable", "comprehension", "decorator", "context", "thread",
+    "process", "database", "http", "api", "pip", "venv", "memory", "performance", "typing", "pep",
+}
+_COMMON_VERBS = ("implement", "create", "define", "write", "use", "make", "find", "calculate", "check", "sort", "search", "traverse", "build", "handle", "work with", "approach", "reason about", "detect", "merge", "evaluate")
+_COMMON_PREFIXES = ("What is ", "What are ", "What does ", "What do ", "How do I ", "How do ", "How does ", "How can I ", "How can ", "Why does ", "Why can ", "When should I ", "When should ", "Is ", "Can I ", "Can ")
+
+def _common_topic(question: str) -> str:
+    topic = question.rstrip("?.!")
+    for prefix in _COMMON_PREFIXES:
+        if topic.lower().startswith(prefix.lower()):
+            topic = topic[len(prefix):]
+            break
+    topic = re.sub(r"\b(?:in|with|using) Python$", "", topic, flags=re.IGNORECASE).strip()
+    for verb in _COMMON_VERBS:
+        if topic.lower().startswith(verb + " "):
+            topic = topic[len(verb):].strip()
+            break
+    if topic.lower().startswith("python "):
+        topic = topic[len("python "):].strip()
+    topic = re.sub(r"^work with\s+", "", topic, flags=re.IGNORECASE).strip()
+    return topic[:1].lower() + topic[1:] if topic else question.rstrip("?.!")
+
+_common_candidates = []
+for _entry in KNOWLEDGE_BASE:
+    _question_words = set(re.findall(r"[a-z0-9_]+", _entry.question.lower()))
+    if (
+        _entry.question.startswith("What does ")
+        or _entry.question.startswith("What is Python commonly used")
+        or _entry.question.startswith("How can a stack evaluate")
+        or not (_question_words & _COMMON_TERMS)
+    ):
+        continue
+    _common_candidates.append((len(_question_words & _COMMON_TERMS), _entry))
+_common_sources = []
+_common_source_topics = set()
+for _, _entry in sorted(_common_candidates, key=lambda item: (-item[0], item[1].question)):
+    _topic = _common_topic(_entry.question).lower()
+    if _topic in _common_source_topics:
+        continue
+    _common_sources.append(_entry)
+    _common_source_topics.add(_topic)
+    if len(_common_sources) == 100:
+        break
+_common_templates = (
+    "Could you explain {topic} in Python?",
+    "Give me a simple explanation of {topic}.",
+    "What should I know about {topic} in Python?",
+    "Can you summarize {topic} for me?",
+    "I am new to Python; how does {topic} work?",
+)
+_common_variants = tuple(
+    KnowledgeEntry(
+        template.format(topic=_common_topic(source.question)),
+        source.answer,
+        tuple(set(source.keywords) | set(re.findall(r"[a-z0-9_]+", source.question.lower()))),
+        ("python " + _common_topic(source.question),),
+        True,
+    )
+    for source in _common_sources
+    for template in _common_templates
+)
+KNOWLEDGE_BASE += _common_variants
+if len(_common_sources) != 100 or len(_common_variants) != 500:
+    raise RuntimeError(f"Expected 500 common question variants, found {len(_common_variants)}")
+if len(KNOWLEDGE_BASE) != 2506:
+    raise RuntimeError(f"Expected 2506 knowledge entries, found {len(KNOWLEDGE_BASE)}")
 
 VISUALS_BY_QUESTION = {
     "How do I search a rotated sorted array?": "binary-search",
@@ -1116,7 +1192,7 @@ VISUALS_BY_QUESTION = {
     "What is recursion?": "recursion",
 }
 
-STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "doe", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "s", "structure", "to", "what", "with", "algorithm", "you", "your"}
+STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "doe", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "s", "structure", "to", "what", "with", "algorithm", "you", "your", "about", "beginner", "explain", "help", "know", "me", "please", "simple", "should", "summarize", "understand", "quick"}
 GENERIC_MATCH_WORDS = {"complexity", "function", "operation", "runtime", "search", "space", "time", "value"}
 
 
@@ -1164,6 +1240,8 @@ def find_entry(question: str) -> KnowledgeEntry | None:
     best_score = 0.0
 
     for entry in KNOWLEDGE_BASE:
+        if entry.exact_only:
+            continue
         # Normalize knowledge-base terms too, so plural forms match singular
         # keywords while technical names remain searchable.
         keywords = {word for keyword in entry.keywords for word in normalize(keyword)}
