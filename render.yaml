@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: pypal-python-chatbot
+    runtime: python
+    plan: free
+    buildCommand: python -m compileall -q chatbot.py knowledge_expansion.py api_knowledge.py server.py
+    startCommand: python server.py
+    healthCheckPath: /healthz
+    autoDeployTrigger: off

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -19,7 +20,17 @@ class ChatHandler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT / "static"), **kwargs)
 
     def do_GET(self) -> None:
-        if urlparse(self.path).path == "/api/knowledge":
+        path = urlparse(self.path).path
+        if path == "/healthz":
+            body = b"ok"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if path == "/api/knowledge":
             entries = [
                 {
                     "question": entry.question,
@@ -76,7 +87,10 @@ class ChatHandler(SimpleHTTPRequestHandler):
 
 
 def main() -> None:
-    address = ("127.0.0.1", 8765)
+    default_host = "0.0.0.0" if "PORT" in os.environ else "127.0.0.1"
+    host = os.environ.get("HOST", default_host)
+    port = int(os.environ.get("PORT", "8765"))
+    address = (host, port)
     print(f"Python Q&A is ready at http://{address[0]}:{address[1]}")
     print("Press Ctrl+C to stop the server.")
     try:

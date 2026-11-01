@@ -16,6 +16,12 @@ Open [http://127.0.0.1:8765](http://127.0.0.1:8765) in your browser. Ask questio
 
 The original terminal interface remains available with `python3 chatbot.py`.
 
+## Deploy to Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/bhuvanteja-0722/python-chat-bot-using-knowledge-base)
+
+The Render Blueprint configures a free Python web service, binds to Render's assigned `PORT`, and checks `/healthz`. Review and approve the service creation in Render. To redeploy future GitHub pushes automatically, turn on **Auto-Deploy** in the Render service settings.
+
 ## Topics covered
 
 The curated knowledge base contains 2,000 entries covering Python syntax and control flow, including structural pattern matching and assignment expressions; built-in types and collections such as Counter, defaultdict, and bisect; arrays, queues, circular queues, stacks, hash tables, linked lists, heaps, trees, tries, range trees, union-find, probabilistic structures and graphs; algorithms such as BFS/DFS, Dijkstra, Bellman-Ford, Floyd-Warshall, A*, topological sort, string search, binary search, two pointers, sliding windows, greedy methods, divide and conquer, dynamic programming and backtracking; Big O, time and space complexity; problem-solving workflows, correctness reasoning, and worked patterns such as Two Sum, prefix sums, interval merging, cycle detection, interval scheduling, longest common subsequence, knapsack, subsets, and shortest paths, edit distance, longest increasing subsequence, rotated-array search and minimum-window substring; implementation guides for binary search, Dijkstra, topological sorting, union-find, tries, LRU caches, heaps, merge sort, quickselect, BFS path reconstruction and prefix-sum queries, k-way merge and sorted-list search; functions, arguments, scope, iterators, generators and decorators; object-oriented programming, dataclasses and type hints; exceptions, logging, files, paths, JSON, CSV, dates and regular expressions; standard-library tools such as `collections`, `itertools`, `argparse`, `sqlite3` and `asyncio`; HTTP, concurrency and the GIL, testing, debugging, profiling, virtual environments, dependencies, style, memory and common security pitfalls.
