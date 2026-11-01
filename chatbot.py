@@ -251,7 +251,7 @@ def merge_intervals(intervals):
     KnowledgeEntry(
         "What is merge sort?",
         "Merge sort divides a sequence into halves, sorts each half, then merges them. It runs in O(n log n) time and is stable, with O(n) extra memory for the usual array implementation.",
-        ("merge", "sort", "sorting", "divide", "conquer"), ("merge sort",),
+        ("merge", "sort", "sorting", "divide", "conquer"), ("merge sort algorithm",),
     ),
     KnowledgeEntry(
         "What is quicksort?",
@@ -760,6 +760,66 @@ def merge_intervals(intervals):
         ("merge", "dictionary", "dict", "combine", "update", "mapping", "union"), ("merge two dictionaries", "combine dictionaries", "dictionary merge"),
     ),
     KnowledgeEntry(
+        "How do I use heapq as a priority queue?",
+        "Python's `heapq` is a min-heap: push `(priority, item)` pairs with `heappush` and remove the smallest with `heappop`. Add a tie-break counter if items at equal priority are not comparable. To get the largest item first, negate numeric priorities.",
+        ("heapq", "priority", "queue", "heap", "push", "pop", "minimum", "python"), ("heapq priority queue", "python priority queue", "use heapq", "priority queue with heapq"),
+    ),
+    KnowledgeEntry(
+        "How do I traverse a binary tree level by level?",
+        "Use breadth-first search with a `deque`: remove nodes from the front and enqueue their children. Each node is visited once, so the traversal takes O(n) time and O(w) space, where w is the maximum width of the tree. For level groups, process the queue's current length before moving to the next level.",
+        ("binary", "tree", "level", "order", "traverse", "bfs", "breadth", "deque", "python"), ("level order traversal", "tree level by level", "breadth first traversal of a tree"),
+    ),
+    KnowledgeEntry(
+        "How do I find the lowest common ancestor in a binary search tree?",
+        "In a BST, compare both target values with the current node. If both are smaller, go left; if both are larger, go right; otherwise the current node is the split point and is their lowest common ancestor. This takes O(h) time for tree height h.",
+        ("lowest", "common", "ancestor", "lca", "binary", "search", "tree", "bst", "node"), ("lowest common ancestor in a bst", "lowest common ancestor in a binary search tree", "find lca in binary search tree", "bst common ancestor"),
+    ),
+    KnowledgeEntry(
+        "How do I implement merge sort in Python?",
+        "Merge sort splits the input, sorts each half, and merges the sorted halves. It takes O(n log n) time and O(n) extra space, and is stable when equal items are taken from the left half first. Python's built-in `sorted()` is usually the better production choice.",
+        ("merge", "sort", "sorting", "implement", "divide", "conquer", "stable", "python", "code"), ("merge sort implementation", "implement merge sort", "merge sort code"),
+    ),
+    KnowledgeEntry(
+        "How do I find the kth largest value with quickselect?",
+        "Quickselect partitions around a pivot and continues only in the partition containing the requested index. For the kth largest value in a list of length n, the ascending target index is `n - k`. Its average time is O(n), with O(n²) worst case; `heapq.nlargest(k, values)[-1]` is a convenient standard-library alternative.",
+        ("quickselect", "kth", "largest", "select", "partition", "pivot", "order statistic"), ("quickselect kth largest", "kth largest quickselect", "kth largest value with quickselect", "select kth element"),
+    ),
+    KnowledgeEntry(
+        "How do I reconstruct a shortest path found by BFS?",
+        "During BFS, store `parent[neighbor] = current` the first time each vertex is visited. When the destination is reached, follow parent links backward to the start, then reverse that list. BFS gives a shortest path by number of edges in an unweighted graph; its traversal cost is O(V + E).",
+        ("reconstruct", "shortest", "path", "bfs", "parent", "unweighted", "graph", "route"), ("reconstruct bfs path", "reconstruct a shortest path found by bfs", "reconstruct shortest path found by bfs", "get path from bfs", "shortest path reconstruction"),
+    ),
+    KnowledgeEntry(
+        "How do I answer range-sum queries with prefix sums?",
+        "Build a prefix array with a leading zero so `prefix[i]` stores the sum before index i. Then the inclusive sum from `left` to `right` is `prefix[right + 1] - prefix[left]`. Building takes O(n), and each query takes O(1); this works for negative values too.",
+        ("range", "sum", "query", "prefix", "array", "subarray", "inclusive"), ("range sum query", "prefix sum range query", "sum a range efficiently"),
+    ),
+    KnowledgeEntry(
+        "How do I find the longest palindromic substring?",
+        "Expand outward from every character and every gap between characters, since palindromes can have odd or even length. Keep the longest matching range seen. This straightforward method takes O(n²) time and O(1) extra space; Manacher's algorithm can do it in O(n) time when needed.",
+        ("longest", "palindrome", "palindromic", "substring", "expand", "center", "string"), ("longest palindromic substring", "find longest palindrome in a string", "palindrome substring algorithm"),
+    ),
+    KnowledgeEntry(
+        "How do I use pathlib to work with file paths?",
+        "Use `pathlib.Path` to build paths with `/`, inspect them, and read or write files. A `Path` represents a filesystem path without requiring manual separator handling. For example, `Path('data') / 'input.txt'` creates a child path; use `read_text()` or `write_text()` for small text files.",
+        ("pathlib", "path", "file", "directory", "filesystem", "read_text", "write_text"), ("python pathlib", "work with file paths", "pathlib path"),
+    ),
+    KnowledgeEntry(
+        "How do I format strings with f-strings?",
+        "Prefix a string with `f` and put expressions in braces: `f'Hello, {name}!'`. Format numbers with a specifier such as `f'{price:.2f}'` for two decimal places. For literal braces, double them as `{{` and `}}`; avoid putting untrusted input into expressions evaluated by `eval`.",
+        ("f-string", "fstrings", "format", "string", "interpolation", "brace", "python"), ("format string in python", "python f string", "string interpolation"),
+    ),
+    KnowledgeEntry(
+        "How do I use a generator expression in Python?",
+        "A generator expression uses parentheses, such as `(item * item for item in values)`, and computes values lazily as they are requested. It can save memory when passing a one-time stream to `sum`, `any`, or a loop. Use a list comprehension when you need to reuse or index the results.",
+        ("generator", "expression", "lazy", "yield", "comprehension", "memory", "iterable"), ("generator expression", "lazy comprehension", "create a generator expression"),
+    ),
+    KnowledgeEntry(
+        "How do I safely look up a dictionary key with a default?",
+        "Use `mapping.get(key, default)` when a missing key should return a fallback instead of raising `KeyError`. Use `key in mapping` when you need to distinguish a missing key from a key whose value is `None`. For nested data, check each level or use a deliberate helper rather than assuming every key exists.",
+        ("dictionary", "dict", "lookup", "key", "default", "get", "missing", "keyerror"), ("dict get default", "dictionary default value", "safe dictionary lookup"),
+    ),
+    KnowledgeEntry(
         "What are common Python collection operation costs?",
         "Typical costs: list indexing is O(1), append is O(1) amortized, and inserting/removing at the front is O(n). Dict and set lookup are O(1) average. `deque` append/pop at either end are O(1). A heap peek is O(1), while push/pop are O(log n). Exact costs depend on the operation and implementation.",
         ("collection", "operation", "complexity", "cost", "list", "append", "dict", "set", "deque", "heap"), ("python data structure time complexity", "complexities of python collections", "list dict set complexity", "time complexity of list append", "time complexity of python list append", "list append complexity"),
@@ -842,6 +902,13 @@ def merge_intervals(intervals):
 )
 
 VISUALS_BY_QUESTION = {
+    "How do I use heapq as a priority queue?": "heap",
+    "How do I traverse a binary tree level by level?": "tree-traversal",
+    "How do I find the lowest common ancestor in a binary search tree?": "bst",
+    "How do I implement merge sort in Python?": "sorting",
+    "How do I find the kth largest value with quickselect?": "sorting",
+    "How do I reconstruct a shortest path found by BFS?": "graph-search",
+    "How do I answer range-sum queries with prefix sums?": "prefix-sum",
     "How do I create a trie in Python?": "trie",
     "How do I implement an LRU cache in Python?": "hash-table",
     "How do I calculate the height of a binary tree?": "tree",
