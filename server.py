@@ -7,7 +7,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-from chatbot import find_answer
+from chatbot import VISUALS_BY_QUESTION, find_answer, find_entry
 
 ROOT = Path(__file__).resolve().parent
 
@@ -32,7 +32,11 @@ class ChatHandler(SimpleHTTPRequestHandler):
                 raise ValueError("Please enter a question first.")
             if len(question) > 2_000:
                 raise ValueError("Please keep your question under 2,000 characters.")
-            response = {"answer": find_answer(question.strip())}
+            entry = find_entry(question.strip())
+            response = {
+                "answer": entry.answer if entry else find_answer(question.strip()),
+                "visual": VISUALS_BY_QUESTION.get(entry.question) if entry else None,
+            }
             body = json.dumps(response).encode("utf-8")
             self.send_response(200)
         except (ValueError, json.JSONDecodeError) as error:

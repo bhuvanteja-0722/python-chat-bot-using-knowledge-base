@@ -19,7 +19,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is Python?",
         "Python is a high-level, general-purpose programming language known for readable syntax and a large standard library.",
-        ("python", "language"), ("what is python", "about python"),
+        ("language",), ("what is python", "about python"),
     ),
     KnowledgeEntry(
         "How do I define a function?",
@@ -39,7 +39,12 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "How do I use a queue in Python?",
         "A queue is a first-in, first-out (FIFO) structure: add items at the back and remove them from the front. For an efficient queue, use `collections.deque` rather than removing index 0 from a list:\n\n```python\nfrom collections import deque\nqueue = deque()\nqueue.append(\"first\")  # enqueue\nitem = queue.popleft()   # dequeue\n```",
-        ("queue", "fifo", "enqueue", "dequeue", "first-in-first-out", "deque"), ("fifo queue", "python queue", "queue data structure"),
+        ("queue", "fifo", "enqueue", "dequeue", "first-in-first-out"), ("fifo queue", "python queue", "queue data structure"),
+    ),
+    KnowledgeEntry(
+        "What is a deque?",
+        "A deque (double-ended queue) supports efficient appends and removals at both ends. Python's `collections.deque` provides `append`, `appendleft`, `pop`, and `popleft`. Use it for queues, sliding windows, or worklists; use a list for fast random indexing.",
+        ("deque", "double", "ended", "queue", "appendleft", "popleft"), ("double ended queue", "double-ended queue"),
     ),
     KnowledgeEntry(
         "What is an array in Python?",
@@ -62,6 +67,11 @@ KNOWLEDGE_BASE = (
         ("stack", "lifo", "push", "pop", "last-in-first-out"), ("stack data structure", "python stack"),
     ),
     KnowledgeEntry(
+        "How can a stack evaluate a postfix expression?",
+        "Scan tokens from left to right. Push numbers; when an operator appears, pop its operands, apply the operator, and push the result. One final stack value is the answer. For subtraction and division, preserve operand order: the first popped value is the right operand.",
+        ("stack", "postfix", "expression", "evaluate", "operator", "operand"), ("postfix evaluation", "evaluate postfix expression", "reverse polish notation"),
+    ),
+    KnowledgeEntry(
         "How do I make a priority queue?",
         "Use the standard-library `heapq` module for a min-priority queue. Store `(priority, item)` pairs; the smallest priority is removed first:\n\n```python\nimport heapq\ntasks = []\nheapq.heappush(tasks, (2, \"later\"))\nheapq.heappush(tasks, (1, \"sooner\"))\npriority, task = heapq.heappop(tasks)\n```",
         ("priority", "queue", "heapq", "priorityqueue"), ("priority queue", "min heap"),
@@ -70,6 +80,51 @@ KNOWLEDGE_BASE = (
         "What is a linked list?",
         "A linked list is a chain of nodes where each node points to the next. Python does not have a built-in linked-list type; lists and `collections.deque` are usually faster and simpler for everyday work. Linked lists are mainly useful when learning data structures or when node-based operations are required.",
         ("linked", "list", "node", "pointer", "next"), ("linked list", "singly linked list", "doubly linked list"),
+    ),
+    KnowledgeEntry(
+        "How do I approach a data-structures problem?",
+        "Use a repeatable workflow:\n1. Restate the task and clarify input, output, limits, and edge cases.\n2. Work through a small example by hand.\n3. Describe a simple correct solution first.\n4. Choose a data structure or algorithm that reduces the expensive work.\n5. State why it is correct, then estimate time and extra space.\n6. Implement in small steps and check empty, smallest, typical, and boundary inputs.\n7. Compare the result with the original examples and revise if needed.",
+        ("approach", "problem", "solve", "workflow", "strategy", "algorithm", "design"), ("problem solving", "solve a coding problem", "approach an algorithm problem", "solve a data structures problem"),
+    ),
+    KnowledgeEntry(
+        "How do I choose a data structure?",
+        "Start from the operations the program needs: indexed access suggests a list; fast key lookup suggests a dict; unique membership suggests a set; FIFO work suggests a deque; LIFO work suggests a list; minimum-priority removal suggests `heapq`. Compare operation costs, memory, ordering, and update patterns before choosing.",
+        ("choose", "data", "structure", "operations", "lookup", "access", "tradeoff"), ("choose a data structure", "which data structure should i use"),
+    ),
+    KnowledgeEntry(
+        "What is an abstract data type?",
+        "An abstract data type (ADT) describes what operations a collection supports and what they mean, without requiring one particular internal representation. A stack ADT, for example, provides push and pop; it can be implemented with a Python list or a linked structure.",
+        ("abstract", "data", "type", "adt", "interface", "operation"), ("abstract data type", "adt"),
+    ),
+    KnowledgeEntry(
+        "How do I reason about algorithm correctness?",
+        "State what must be true before and after each step. For a loop, use an invariant: show it is true before the first iteration, stays true after every iteration, and implies the result when the loop ends. Then check termination and edge cases.",
+        ("correctness", "proof", "invariant", "loop", "termination", "reasoning"), ("prove an algorithm", "loop invariant", "algorithm correctness"),
+    ),
+    KnowledgeEntry(
+        "What is amortized analysis?",
+        "Amortized analysis bounds the average cost per operation over any sequence of operations, even when an occasional operation is expensive. A dynamic array append is usually O(1) amortized: most appends are cheap, while a resize copies items only occasionally.",
+        ("amortized", "analysis", "dynamic", "array", "append", "resize", "cost"), ("amortized analysis", "amortized complexity"),
+    ),
+    KnowledgeEntry(
+        "How do I check whether two strings are anagrams?",
+        "Normalize the strings according to the problem's rules, then compare character counts. This is O(n) time and O(k) extra space for k distinct characters:\n\n```python\nfrom collections import Counter\n\ndef are_anagrams(first, second):\n    return Counter(first) == Counter(second)\n```\nIf spaces or letter case should be ignored, normalize them before counting.",
+        ("anagram", "anagrams", "character", "frequency", "count", "string"), ("anagram detection", "check anagrams", "anagram problem"),
+    ),
+    KnowledgeEntry(
+        "How do I check balanced parentheses?",
+        "Scan left to right with a stack. Push each opening bracket; for a closing bracket, check and remove the matching opener. The string is balanced only if every close matched and the stack ends empty. This takes O(n) time and O(n) worst-case space.",
+        ("balanced", "parentheses", "bracket", "brackets", "stack", "symbol"), ("balanced parentheses", "matching brackets", "balanced symbols"),
+    ),
+    KnowledgeEntry(
+        "How do I find the shortest word ladder?",
+        "Model each word as a graph vertex and connect words that differ by one letter. Breadth-first search finds the shortest ladder when each change has equal cost. Track visited words to avoid revisiting nodes; precomputed wildcard buckets can make neighbor lookup faster.",
+        ("word", "ladder", "shortest", "bfs", "breadth", "graph", "path"), ("word ladder", "word transformation problem"),
+    ),
+    KnowledgeEntry(
+        "How do I traverse a tree?",
+        "Depth-first traversals include preorder (node, left, right), inorder (left, node, right), and postorder (left, right, node). Breadth-first traversal visits level by level with a queue. Each traversal visits n nodes in O(n) time.",
+        ("traverse", "traversal", "tree", "preorder", "inorder", "postorder", "breadth"), ("tree traversal", "traverse a tree"),
     ),
     KnowledgeEntry(
         "What is a tree data structure?",
@@ -97,6 +152,11 @@ KNOWLEDGE_BASE = (
         ("graph", "vertex", "vertices", "edge", "adjacency", "node"), ("graph data structure", "adjacency list"),
     ),
     KnowledgeEntry(
+        "What is the difference between an adjacency list and matrix?",
+        "An adjacency list stores each vertex's neighbors and uses O(V + E) space, so it suits sparse graphs. An adjacency matrix uses O(V²) space but checks whether an edge exists in O(1), which can suit dense graphs. Choose based on graph density and the operations needed.",
+        ("adjacency", "list", "matrix", "graph", "space", "edge"), ("adjacency list vs matrix", "adjacency list and matrix", "adjacency matrix vs list", "graph representation"),
+    ),
+    KnowledgeEntry(
         "What are BFS and DFS?",
         "Breadth-first search (BFS) explores a graph level by level, usually with a queue. Depth-first search (DFS) follows a path before backtracking, using a stack or recursion. Track visited nodes so cycles do not cause infinite traversal.",
         ("bfs", "dfs", "breadth", "depth", "search", "traversal", "graph"), ("breadth first search", "depth first search", "graph traversal"),
@@ -115,6 +175,31 @@ KNOWLEDGE_BASE = (
         "How do I sort values in Python?",
         "Use `sorted(values)` to make a new sorted list or `values.sort()` to sort a list in place. Pass `key=` to choose what to compare, and `reverse=True` for descending order. Python's sort is stable.",
         ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sort a list", "sorting a list"),
+    ),
+    KnowledgeEntry(
+        "How do common sorting algorithms compare?",
+        "Bubble, selection, and insertion sort are usually O(n²); insertion sort can be useful on small or nearly sorted inputs. Merge sort is O(n log n), stable, and uses extra memory. Quicksort is O(n log n) on average but O(n²) in the worst case. In real Python code, prefer the stable built-in `sorted()` unless you are studying or need a special algorithm.",
+        ("sorting", "algorithm", "bubble", "selection", "insertion", "merge", "quick", "compare"), ("sorting algorithms", "compare sorting methods", "sorting methods"),
+    ),
+    KnowledgeEntry(
+        "What is merge sort?",
+        "Merge sort divides a sequence into halves, sorts each half, then merges them. It runs in O(n log n) time and is stable, with O(n) extra memory for the usual array implementation.",
+        ("merge", "sort", "sorting", "divide", "conquer"), ("merge sort",),
+    ),
+    KnowledgeEntry(
+        "What is quicksort?",
+        "Quicksort partitions values around a pivot and recursively sorts the partitions. Its average time is O(n log n), but poor pivots can lead to O(n²) worst-case time. Python's built-in sort is usually the better practical choice.",
+        ("quick", "sort", "quicksort", "pivot", "partition"), ("quick sort", "quicksort"),
+    ),
+    KnowledgeEntry(
+        "What is insertion sort?",
+        "Insertion sort grows a sorted prefix by inserting each next item into its proper position. It takes O(n²) time in general, but is simple and performs well on small or nearly sorted sequences.",
+        ("insertion", "sort", "sorting", "nearly", "sorted"), ("insertion sort",),
+    ),
+    KnowledgeEntry(
+        "What is sequential or linear search?",
+        "Linear search checks items one by one until it finds a match or reaches the end. It works on unsorted data and takes O(n) time in the worst case. For repeated lookups, consider sorting once or using a set/dictionary.",
+        ("sequential", "linear", "search", "unsorted", "lookup"), ("sequential search", "linear search"),
     ),
     KnowledgeEntry(
         "What is Big O notation?",
@@ -185,6 +270,21 @@ KNOWLEDGE_BASE = (
         "What is Dijkstra's algorithm?",
         "Dijkstra's algorithm finds shortest paths from one source when edge weights are nonnegative. A min-priority queue (Python's `heapq`) selects the next closest vertex. For negative edge weights, use an algorithm designed for them, such as Bellman-Ford.",
         ("dijkstra", "algorithm", "shortest", "path", "weight", "graph"), ("dijkstra algorithm", "dijkstra's algorithm", "shortest path"),
+    ),
+    KnowledgeEntry(
+        "What is Prim's algorithm?",
+        "Prim's algorithm builds a minimum spanning tree for a connected, weighted, undirected graph. Starting from one vertex, repeatedly add the lowest-weight edge that connects the tree to a new vertex. A min-heap helps select edges efficiently; negative edge weights are allowed.",
+        ("prim", "minimum", "spanning", "tree", "weighted", "graph", "edge"), ("prim's algorithm", "minimum spanning tree", "mst"),
+    ),
+    KnowledgeEntry(
+        "What is the Knight's Tour problem?",
+        "The Knight's Tour asks for a sequence of chess-knight moves that visits every board square once. It can be modeled as a graph search: squares are vertices and legal moves are edges. Backtracking explores paths; move-ordering heuristics can reduce search, but do not change the need to verify a complete tour.",
+        ("knight", "tour", "chess", "backtracking", "board", "move"), ("knight's tour", "knights tour"),
+    ),
+    KnowledgeEntry(
+        "How can I solve a maze with search?",
+        "Model open cells as positions and legal moves as edges. Use DFS or backtracking to find any path; use BFS when every move has equal cost and you need the shortest path. Keep a visited set and record parents if you need to reconstruct the route.",
+        ("maze", "search", "path", "dfs", "bfs", "visited", "backtracking"), ("maze solving", "explore a maze"),
     ),
     KnowledgeEntry(
         "What is bit manipulation?",
@@ -429,7 +529,55 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry("How do I use Python's interactive shell?", "Run `python3` in a terminal to open the interactive interpreter, where you can try expressions one at a time. Use `help(str)` or `dir(object)` to explore. Exit with `exit()` or Ctrl+D on macOS/Linux.", ("interactive", "shell", "repl", "interpreter", "help"), ("python repl", "interactive interpreter")),
 )
 
-STOP_WORDS = {"a", "an", "and", "are", "can", "do", "does", "for", "how", "i", "in", "is", "it", "of", "the", "to", "what", "with", "you", "your"}
+VISUALS_BY_QUESTION = {
+    "How do I approach a data-structures problem?": "workflow",
+    "What is an array in Python?": "array",
+    "What is a hash table or map?": "hash-table",
+    "How do I use a queue in Python?": "queue",
+    "What is a deque?": "queue",
+    "How do I make a circular queue?": "circular-queue",
+    "How do I implement a stack?": "stack",
+    "How can a stack evaluate a postfix expression?": "stack",
+    "What is a linked list?": "linked-list",
+    "What is a tree data structure?": "tree",
+    "What is a binary search tree?": "bst",
+    "What is a heap?": "heap",
+    "How do I make a priority queue?": "heap",
+    "What is a graph data structure?": "graph",
+    "What is the difference between an adjacency list and matrix?": "graph",
+    "What are BFS and DFS?": "graph-search",
+    "What is Prim's algorithm?": "graph-search",
+    "What is the Knight's Tour problem?": "graph-search",
+    "How can I solve a maze with search?": "graph-search",
+    "How do I traverse a tree?": "tree-traversal",
+    "How does binary search work?": "binary-search",
+    "What is searching in algorithms?": "search",
+    "How do I sort values in Python?": "sorting",
+    "How do common sorting algorithms compare?": "sorting",
+    "What is merge sort?": "sorting",
+    "What is quicksort?": "sorting",
+    "What is insertion sort?": "sorting",
+    "What is sequential or linear search?": "search",
+    "What is Big O notation?": "complexity",
+    "What is time complexity?": "complexity",
+    "What is space complexity?": "complexity",
+    "What are the two-pointer and sliding-window techniques?": "sliding-window",
+    "What is dynamic programming?": "dynamic-programming",
+    "What is backtracking?": "backtracking",
+    "What is a trie?": "trie",
+    "What are segment trees and Fenwick trees?": "range-trees",
+    "What is disjoint set union (union-find)?": "union-find",
+    "What is a monotonic stack or queue?": "monotonic",
+    "What is topological sorting?": "topological",
+    "What is Dijkstra's algorithm?": "dijkstra",
+    "What is a Bloom filter?": "bloom-filter",
+    "How do I check whether two strings are anagrams?": "anagram",
+    "How do I check balanced parentheses?": "parentheses",
+    "How do I find the shortest word ladder?": "word-ladder",
+    "What is recursion?": "recursion",
+}
+
+STOP_WORDS = {"a", "an", "and", "are", "can", "do", "does", "for", "how", "i", "in", "is", "it", "of", "python", "the", "to", "what", "with", "you", "your"}
 
 
 def normalize(text: str) -> list[str]:
@@ -449,11 +597,13 @@ def normalize(text: str) -> list[str]:
     return normalized
 
 
-def find_answer(question: str) -> str:
+def find_entry(question: str) -> KnowledgeEntry | None:
     """Find the best matching knowledge entry using phrase and keyword scoring."""
     words = set(normalize(question)) - STOP_WORDS
     if not words:
-        return "Please ask a Python question, such as ‘How do I define a function?’"
+        if "python" in normalize(question):
+            return next(entry for entry in KNOWLEDGE_BASE if entry.question == "What is Python?")
+        return None
 
     question_normalized = " ".join(normalize(question))
     best_entry: KnowledgeEntry | None = None
@@ -472,6 +622,11 @@ def find_answer(question: str) -> str:
                     if close:
                         overlap.add(close[0])
         score = len(overlap) / max(1, len(words))
+        # Prefer entries whose title names the requested topic. This prevents a
+        # broad keyword (for example, "graph") in an example problem such as
+        # word ladder from winning over the graph overview itself.
+        title_words = set(normalize(entry.question)) - STOP_WORDS
+        score += 0.2 * len(words & title_words) / max(1, len(words))
         for phrase in entry.aliases:
             phrase_words = " ".join(normalize(phrase))
             if phrase_words and phrase_words in question_normalized:
@@ -480,11 +635,19 @@ def find_answer(question: str) -> str:
             best_score = score
             best_entry = entry
 
-    if best_entry is None or best_score < 0.25:
-        return ("I don't have a confident answer for that yet. I can help with Python built-in types, data structures, "
-                "algorithms, complexity, functions, collections, loops, exceptions, modules, classes, files, and packages. "
-                "Try asking about one of those topics.")
-    return best_entry.answer
+    return best_entry if best_entry is not None and best_score >= 0.25 else None
+
+
+def find_answer(question: str) -> str:
+    """Return an answer for a question, with a useful fallback when unmatched."""
+    entry = find_entry(question)
+    if entry:
+        return entry.answer
+    if not set(normalize(question)) - STOP_WORDS:
+        return "Please ask a Python question, such as ‘How do I define a function?’"
+    return ("I don't have a confident answer for that yet. I can help with Python built-in types, data structures, "
+            "algorithms, complexity, problem solving, functions, collections, loops, exceptions, modules, classes, files, and packages. "
+            "Try asking about one of those topics.")
 
 
 def main() -> None:

@@ -23,14 +23,14 @@ function formatAnswer(text) {
   }).join('')).join('');
 }
 
-function appendMessage(role, text, typing = false) {
+function appendMessage(role, text, typing = false, visualKey = null) {
   const article = document.createElement('article');
   article.className = 'message ' + role;
   const avatar = role === 'bot' ? 'Py' : 'Y';
   const label = role === 'bot' ? 'Python helper' : 'You';
   const body = typing
     ? '<div class="typing" aria-label="Thinking"><span></span><span></span><span></span></div>'
-    : '<div class="message-bubble">' + (role === 'bot' ? formatAnswer(text) : escapeHtml(text).replace(/\n/g, '<br>')) + '</div>';
+    : '<div class="message-bubble">' + (role === 'bot' ? formatAnswer(text) : escapeHtml(text).replace(/\n/g, '<br>')) + (role === 'bot' && visualKey && window.PyPalVisuals ? window.PyPalVisuals.render(visualKey) : '') + '</div>';
   article.innerHTML = '<span class="message-avatar" aria-hidden="true">' + avatar + '</span><div class="message-content"><div class="message-meta">' + label + '</div>' + body + '</div>';
   messages.append(article);
   scrollToLatest();
@@ -73,7 +73,7 @@ async function ask(question) {
     const data = await response.json();
     thinking.remove();
     if (!response.ok) throw new Error(data.error || 'Could not get an answer. Please try again.');
-    appendMessage('bot', data.answer);
+    appendMessage('bot', data.answer, false, data.visual);
   } catch (error) {
     thinking.remove();
     appendMessage('bot', error.message || 'Could not reach the local chatbot. Make sure the server is running and try again.');
