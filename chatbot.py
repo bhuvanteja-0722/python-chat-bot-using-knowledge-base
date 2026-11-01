@@ -654,6 +654,86 @@ def merge_intervals(intervals):
     KnowledgeEntry("How does Python manage memory?", "Python manages object memory automatically, including reference counting and a garbage collector for reference cycles. Usually you should focus on releasing external resources with context managers rather than manually freeing objects.", ("memory", "garbage", "collector", "reference", "leak"), ("garbage collection", "memory management")),
     KnowledgeEntry("Is eval safe in Python?", "Avoid `eval()` and `exec()` on untrusted input: they can execute arbitrary Python code. Use safer parsers such as `json.loads()` for JSON or validate input against the exact format you expect.", ("eval", "exec", "security", "unsafe", "untrusted"), ("eval security", "execute a string")),
     KnowledgeEntry("How do I use Python's interactive shell?", "Run `python3` in a terminal to open the interactive interpreter, where you can try expressions one at a time. Use `help(str)` or `dir(object)` to explore. Exit with `exit()` or Ctrl+D on macOS/Linux.", ("interactive", "shell", "repl", "interpreter", "help"), ("python repl", "interactive interpreter")),
+    KnowledgeEntry(
+        "What are common Python collection operation costs?",
+        "Typical costs: list indexing is O(1), append is O(1) amortized, and inserting/removing at the front is O(n). Dict and set lookup are O(1) average. `deque` append/pop at either end are O(1). A heap peek is O(1), while push/pop are O(log n). Exact costs depend on the operation and implementation.",
+        ("collection", "operation", "complexity", "cost", "list", "dict", "set", "deque", "heap"), ("python data structure time complexity", "complexities of python collections", "list dict set complexity"),
+    ),
+    KnowledgeEntry(
+        "How do I implement BFS in Python?",
+        "Use `collections.deque` as a FIFO worklist and mark nodes visited when enqueuing them so each is added once. With an adjacency list, BFS takes O(V + E):\n\n```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    seen = {start}\n    queue = deque([start])\n    order = []\n    while queue:\n        node = queue.popleft()\n        order.append(node)\n        for neighbor in graph.get(node, []):\n            if neighbor not in seen:\n                seen.add(neighbor)\n                queue.append(neighbor)\n    return order\n```",
+        ("bfs", "breadth", "first", "search", "code", "python", "queue", "deque"), ("bfs implementation", "breadth first search code", "write bfs in python", "implement bfs in python"),
+    ),
+    KnowledgeEntry(
+        "How do I implement DFS in Python?",
+        "An explicit list can serve as a stack and avoids recursion-depth limits on deep graphs. Mark a node visited when removing it, and skip it if already seen. With an adjacency list this takes O(V + E):\n\n```python\ndef dfs(graph, start):\n    seen = set()\n    stack = [start]\n    order = []\n    while stack:\n        node = stack.pop()\n        if node in seen:\n            continue\n        seen.add(node)\n        order.append(node)\n        stack.extend(reversed(graph.get(node, [])))\n    return order\n```",
+        ("dfs", "depth", "first", "search", "code", "python", "stack"), ("dfs implementation", "depth first search code", "write dfs in python", "implement dfs in python"),
+    ),
+    KnowledgeEntry(
+        "How do I find connected components in a graph?",
+        "For an undirected graph, start a BFS or DFS from each unvisited vertex. Each traversal discovers one connected component; label its visited vertices before starting the next traversal. An adjacency-list implementation takes O(V + E) time.",
+        ("connected", "component", "graph", "bfs", "dfs", "visited", "undirected"), ("connected components", "find components in a graph"),
+    ),
+    KnowledgeEntry(
+        "How do I detect a cycle in a directed graph?",
+        "Use depth-first search with three states: unseen, currently on the recursion path, and fully processed. An edge to a node currently on the path is a back edge and proves a cycle. This takes O(V + E); for very deep graphs, use an iterative DFS to avoid recursion limits.",
+        ("cycle", "detect", "directed", "graph", "dfs", "back", "edge"), ("directed graph cycle", "cycle in a directed graph", "detect directed cycle"),
+    ),
+    KnowledgeEntry(
+        "How do I check whether a graph is bipartite?",
+        "Try coloring each vertex with one of two colors so every edge connects different colors. BFS or DFS propagates the opposite color to each neighbor; a conflict means the graph is not bipartite. Start a traversal in every component. This takes O(V + E).",
+        ("bipartite", "graph", "color", "colour", "bfs", "dfs", "odd", "cycle"), ("bipartite graph", "check if a graph is bipartite", "two-color a graph"),
+    ),
+    KnowledgeEntry(
+        "What is the longest common subsequence problem?",
+        "A subsequence keeps the original order but may skip items. For strings A and B, dynamic programming compares prefixes: matching characters add one to the diagonal result; otherwise take the larger of the top or left result. The standard table uses O(mn) time and space; rolling rows can reduce space when only the length is needed.",
+        ("longest", "common", "subsequence", "lcs", "dynamic", "programming", "string"), ("longest common subsequence", "lcs problem"),
+    ),
+    KnowledgeEntry(
+        "How does the 0/1 knapsack dynamic program work?",
+        "For each item, choose whether to take it without exceeding capacity. With a one-dimensional DP array, iterate capacities downward so an item cannot be reused in the same pass. This takes O(nC) time and O(C) space for n items and capacity C; it is pseudo-polynomial because it depends on the numeric capacity.",
+        ("knapsack", "zero", "one", "01", "dynamic", "programming", "capacity", "weight", "value"), ("0/1 knapsack", "zero one knapsack", "knapsack dynamic programming"),
+    ),
+    KnowledgeEntry(
+        "What is the difference between memoization and tabulation?",
+        "Memoization is top-down: a recursive function caches answers when needed. Tabulation is bottom-up: a loop fills a table in dependency order. Both reuse subproblem results; choose the one with clearer state transitions, and consider recursion depth and memory use.",
+        ("memoization", "tabulation", "top", "down", "bottom", "up", "dynamic", "programming", "cache"), ("memoization vs tabulation", "top-down vs bottom-up dp", "difference between memoization and tabulation"),
+    ),
+    KnowledgeEntry(
+        "How do I find the maximum-sum subarray?",
+        "Kadane's algorithm tracks the best subarray ending at the current position and the best seen overall. At each value, either extend the prior subarray or start fresh. It runs in O(n) time and O(1) extra space; initialize from the first value so all-negative inputs work.",
+        ("maximum", "maximum-sum", "subarray", "sum", "kadane", "array"), ("maximum subarray", "max subarray sum", "kadane algorithm"),
+    ),
+    KnowledgeEntry(
+        "How do I find the next greater element?",
+        "Scan left to right with a monotonic decreasing stack of indices. When a new value is larger than the value at the stack top, it is the next greater element for that index; pop and record it. Each index is pushed and popped once, so the algorithm is O(n).",
+        ("next", "greater", "element", "monotonic", "stack", "array"), ("next greater element", "next greater number"),
+    ),
+    KnowledgeEntry(
+        "How does greedy interval scheduling work?",
+        "To select the largest number of non-overlapping intervals, sort by end time and repeatedly choose the next interval whose start is at or after the last chosen end. This greedy rule is optimal for this specific objective and takes O(n log n) time because of sorting. Greedy choices need a proof for each problem.",
+        ("greedy", "interval", "schedule", "non-overlap", "end", "activity", "selection"), ("interval scheduling", "activity selection", "maximum non-overlapping intervals"),
+    ),
+    KnowledgeEntry(
+        "How do I find the maximum in every sliding window?",
+        "Use a decreasing deque of indices. Remove indices that have left the window from the front, and remove smaller values from the back because they cannot be a future maximum. The front is the current maximum. Each index is added and removed once, giving O(n) time.",
+        ("sliding", "window", "maximum", "max", "deque", "monotonic", "queue"), ("sliding window maximum", "maximum of each window", "max in every window", "maximum in every sliding window"),
+    ),
+    KnowledgeEntry(
+        "How do I write Fibonacci with memoization?",
+        "Memoization caches each Fibonacci result so the recursive definition does not recompute the same values exponentially many times. Python's `functools.cache` is available in Python 3.9 and newer:\n\n```python\nfrom functools import cache\n\n@cache\ndef fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n```\nFor very large n, an iterative solution avoids recursion-depth limits.",
+        ("fibonacci", "fib", "memoization", "cache", "recursion", "dynamic"), ("fibonacci memoization", "memoized fibonacci", "fibonacci with cache"),
+    ),
+    KnowledgeEntry(
+        "Why should I avoid mutable default arguments?",
+        "Default argument values are created once when the function is defined, so a mutable default such as `items=[]` is shared across calls. Use `None` and create a new list inside the function instead: `def add(value, items=None):\n    if items is None:\n        items = []\n    items.append(value)\n    return items`.",
+        ("mutable", "default", "argument", "list", "shared", "function"), ("mutable default argument", "default list argument", "empty list default parameter"),
+    ),
+    KnowledgeEntry(
+        "What is the difference between is and == in Python?",
+        "`==` compares values for equality. `is` checks whether two references point to the same object. Use `is None` for the singleton `None`; do not use `is` to compare ordinary strings or numbers.",
+        ("is", "==", "difference", "identity", "equality", "equal", "same", "object", "none"), ("is vs equals", "is versus ==", "identity vs equality", "difference between is and equals"),
+    ),
 )
 
 VISUALS_BY_QUESTION = {
@@ -676,6 +756,20 @@ VISUALS_BY_QUESTION = {
     "What are BFS and DFS?": "graph-search",
     "How do I find a shortest path in an unweighted graph?": "graph-search",
     "How do I choose a shortest-path algorithm?": "graph",
+    "What are common Python collection operation costs?": "complexity",
+    "How do I implement BFS in Python?": "graph-search",
+    "How do I implement DFS in Python?": "graph-search",
+    "How do I find connected components in a graph?": "graph",
+    "How do I detect a cycle in a directed graph?": "graph",
+    "How do I check whether a graph is bipartite?": "graph",
+    "What is the longest common subsequence problem?": "dynamic-programming",
+    "How does the 0/1 knapsack dynamic program work?": "dynamic-programming",
+    "What is the difference between memoization and tabulation?": "dynamic-programming",
+    "How do I find the maximum-sum subarray?": "array",
+    "How do I find the next greater element?": "monotonic",
+    "How does greedy interval scheduling work?": "sorting",
+    "How do I find the maximum in every sliding window?": "monotonic",
+    "How do I write Fibonacci with memoization?": "recursion",
     "How do I solve the Two Sum problem?": "two-sum",
     "How do prefix sums work?": "prefix-sum",
     "How do I merge overlapping intervals?": "sorting",
@@ -722,11 +816,12 @@ VISUALS_BY_QUESTION = {
 }
 
 STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "structure", "to", "what", "with", "algorithm", "you", "your"}
+GENERIC_MATCH_WORDS = {"complexity", "function", "operation", "runtime", "search", "space", "time", "value"}
 
 
 def normalize(text: str) -> list[str]:
     """Return lowercase words with common English plurals reduced to their base form."""
-    text = re.sub(r"\ba\s*\*", "a star", text.lower())
+    text = re.sub(r"\ba\s*\*", "a star", text.lower()).replace("==", " equals ")
     words = re.findall(r"[a-z0-9_]+", text)
     normalized = []
     for word in words:
@@ -797,6 +892,11 @@ def find_entry(question: str) -> KnowledgeEntry | None:
                 alias_hit = True
         if alias_hit:
             score += 1.0
+        # One broad word should not turn a question with several unrelated
+        # terms into a confident but misleading answer. Exact phrase aliases
+        # still allow concise questions such as "time complexity".
+        if len(words) > 2 and len(exact_overlap) == 1 and exact_overlap <= GENERIC_MATCH_WORDS and not alias_hit:
+            continue
         if score > best_score:
             best_score = score
             best_entry = entry
