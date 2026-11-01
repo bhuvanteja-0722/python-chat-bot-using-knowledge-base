@@ -42,6 +42,11 @@ KNOWLEDGE_BASE = (
         ("queue", "fifo", "enqueue", "dequeue", "first-in-first-out", "deque"), ("fifo queue", "python queue", "queue data structure"),
     ),
     KnowledgeEntry(
+        "What is an array in Python?",
+        "An array stores an indexed sequence of items. Python lists are dynamic arrays and are the usual general-purpose choice. The standard-library `array.array` stores compact, same-type numeric values; NumPy arrays are popular for numerical computing but require installing NumPy.",
+        ("array", "arrays", "indexed", "contiguous", "numpy"), ("python array", "array data structure", "dynamic array"),
+    ),
+    KnowledgeEntry(
         "How do I make a circular queue?",
         "A circular queue reuses a fixed-size buffer as its indices wrap around. For a simple bounded queue, `deque(maxlen=capacity)` is convenient, but it silently discards the oldest item when full. If a full queue should reject new items instead, check the capacity before appending:\n\n```python\nfrom collections import deque\ncapacity = 3\nqueue = deque()\n\ndef enqueue(item):\n    if len(queue) == capacity:\n        raise OverflowError(\"queue is full\")\n    queue.append(item)\n```\nUse `popleft()` to dequeue. For a thread-safe producer/consumer queue, use `queue.Queue`.",
         ("circular", "queue", "fifo", "ring", "buffer", "wrap", "deque", "capacity"), ("circular queue", "circular buffer", "ring buffer"),
@@ -59,7 +64,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "How do I make a priority queue?",
         "Use the standard-library `heapq` module for a min-priority queue. Store `(priority, item)` pairs; the smallest priority is removed first:\n\n```python\nimport heapq\ntasks = []\nheapq.heappush(tasks, (2, \"later\"))\nheapq.heappush(tasks, (1, \"sooner\"))\npriority, task = heapq.heappop(tasks)\n```",
-        ("priority", "queue", "heap", "heapq", "priorityqueue"), ("priority queue", "min heap", "heap data structure"),
+        ("priority", "queue", "heapq", "priorityqueue"), ("priority queue", "min heap"),
     ),
     KnowledgeEntry(
         "What is a linked list?",
@@ -70,6 +75,21 @@ KNOWLEDGE_BASE = (
         "What is a tree data structure?",
         "A tree is a hierarchical structure of nodes connected by edges, often with one root. Python has no general-purpose built-in tree container; represent nodes with a small class or dataclass and store child nodes in a list or dictionary.",
         ("tree", "node", "root", "child", "parent", "hierarchy"), ("tree data structure", "binary tree"),
+    ),
+    KnowledgeEntry(
+        "What is a binary search tree?",
+        "A binary search tree (BST) is a binary tree ordered so values in the left subtree are smaller and values in the right subtree are larger (the exact duplicate rule depends on the implementation). Search, insert, and delete take O(log n) on a balanced tree but can degrade to O(n) if it becomes skewed.",
+        ("binary", "search", "tree", "bst", "ordered", "balanced"), ("binary search tree", "bst"),
+    ),
+    KnowledgeEntry(
+        "What is a heap?",
+        "A heap is a tree-shaped priority structure that keeps the smallest (min-heap) or largest (max-heap) item at the root. Python's `heapq` provides a min-heap using a list: `heappush()` inserts and `heappop()` removes the smallest item, each in O(log n).",
+        ("heap", "heaps", "heapq", "minheap", "maxheap", "priority"), ("heap data structure", "binary heap"),
+    ),
+    KnowledgeEntry(
+        "What are advanced data structures?",
+        "Advanced structures solve specialized problems: tries index prefixes, segment/Fenwick trees answer range queries, union-find tracks connected components, and Bloom filters test set membership approximately. Choose one only when its operations fit the workload; Python's `dict`, `set`, `list`, and `deque` are enough for many applications.",
+        ("advanced", "structure", "structures", "data", "specialized"), ("advanced data structures", "advanced structures"),
     ),
     KnowledgeEntry(
         "What is a graph data structure?",
@@ -85,6 +105,11 @@ KNOWLEDGE_BASE = (
         "How does binary search work?",
         "Binary search finds a value in a sorted sequence by repeatedly halving the search range, taking O(log n) comparisons. The input must already be sorted. Python's `bisect` module provides insertion-point searches for sorted lists.",
         ("binary", "search", "sorted", "bisect", "logarithmic"), ("binary search", "search a sorted list"),
+    ),
+    KnowledgeEntry(
+        "What is searching in algorithms?",
+        "Searching finds an item or position. A linear scan works on any iterable and takes O(n); binary search takes O(log n) but requires sorted data. For repeated membership checks, a set or dictionary usually offers O(1) average lookup.",
+        ("searching", "search", "find", "lookup", "linear", "algorithm"), ("search algorithms", "searching algorithms"),
     ),
     KnowledgeEntry(
         "How do I sort values in Python?",
@@ -123,8 +148,153 @@ KNOWLEDGE_BASE = (
     ),
     KnowledgeEntry(
         "What is backtracking?",
-        "Backtracking explores candidate choices and reverses a choice when it cannot lead to a solution. It is commonly used for permutations, combinations, and constraint puzzles. Prune impossible branches early; the worst-case search can still be exponential.",
-        ("backtracking", "backtrack", "search", "candidate", "prune", "recursion"), ("backtracking algorithm", "recursion and backtracking"),
+        "Backtracking often uses recursion to explore choices: make a choice, recurse, then undo it before trying another. Stop at a base case when a solution is complete; prune branches that cannot work. It is commonly used for permutations, combinations, and constraint puzzles, but worst-case search can be exponential.",
+        ("backtracking", "backtrack", "search", "candidate", "prune"), ("backtracking algorithm", "recursion and backtracking"),
+    ),
+    KnowledgeEntry(
+        "What is divide and conquer?",
+        "Divide and conquer breaks a problem into smaller independent subproblems, solves them, then combines their results. Merge sort and binary search are examples. Analyze the recurrence to estimate its time complexity.",
+        ("divide", "conquer", "subproblem", "combine", "recurrence", "algorithm"), ("divide and conquer", "divide-and-conquer"),
+    ),
+    KnowledgeEntry(
+        "What is a trie?",
+        "A trie (prefix tree) stores strings by sharing nodes for common prefixes. It supports prefix lookup in O(length of the key), independent of how many keys are stored, at the cost of extra memory. Tries are useful for autocomplete and dictionaries of words.",
+        ("trie", "prefix", "autocomplete", "string", "dictionary"), ("trie data structure", "prefix tree"),
+    ),
+    KnowledgeEntry(
+        "What are segment trees and Fenwick trees?",
+        "A segment tree answers range queries and supports point or range updates, commonly in O(log n), using O(n) memory. A Fenwick tree (binary indexed tree) is a smaller, simpler structure for prefix sums and point updates, also in O(log n). Use a Fenwick tree when its supported operations are sufficient.",
+        ("segment", "fenwick", "tree", "range", "query", "fenwicktree"), ("segment tree", "fenwick tree", "binary indexed tree", "bit tree"),
+    ),
+    KnowledgeEntry(
+        "What is disjoint set union (union-find)?",
+        "Disjoint set union (DSU), also called union-find, tracks which items belong to the same connected component. `find(x)` gets a representative and `union(a, b)` merges sets. Path compression and union by size make operations nearly constant time in practice.",
+        ("disjoint", "union", "find", "dsu", "component", "set"), ("disjoint set union", "union find", "union-find", "dsu"),
+    ),
+    KnowledgeEntry(
+        "What is a monotonic stack or queue?",
+        "A monotonic stack or deque keeps values in increasing or decreasing order by removing dominated values as new ones arrive. It can solve next-greater-element and sliding-window-extreme problems in O(n), because each item is added and removed at most once.",
+        ("monotonic", "stack", "queue", "deque", "increasing", "decreasing"), ("monotonic stack", "monotonic queue", "monotonic stack queue"),
+    ),
+    KnowledgeEntry(
+        "What is topological sorting?",
+        "A topological ordering lists the vertices of a directed acyclic graph so every edge points forward. Use Kahn's algorithm with indegrees and a queue, or DFS postorder. If not all vertices are emitted, the graph contains a cycle.",
+        ("topological", "sort", "sorting", "directed", "acyclic", "graph"), ("topological sort", "topological sorting"),
+    ),
+    KnowledgeEntry(
+        "What is Dijkstra's algorithm?",
+        "Dijkstra's algorithm finds shortest paths from one source when edge weights are nonnegative. A min-priority queue (Python's `heapq`) selects the next closest vertex. For negative edge weights, use an algorithm designed for them, such as Bellman-Ford.",
+        ("dijkstra", "algorithm", "shortest", "path", "weight", "graph"), ("dijkstra algorithm", "dijkstra's algorithm", "shortest path"),
+    ),
+    KnowledgeEntry(
+        "What is bit manipulation?",
+        "Bit manipulation uses integer bitwise operators: `&` AND, `|` OR, `^` XOR, `~` NOT, `<<` left shift, and `>>` right shift. For example, `n & 1` checks whether a nonnegative integer is odd. Prefer clear code unless bit operations are useful for the task.",
+        ("bit", "bits", "bitwise", "manipulation", "shift", "xor"), ("bit manipulation", "bitwise operations"),
+    ),
+    KnowledgeEntry(
+        "What is KMP string search?",
+        "Knuth-Morris-Pratt (KMP) searches for a pattern in text in O(n + m) time by reusing prefix-match information instead of restarting after every mismatch. It preprocesses a prefix table for the pattern. Python's `str.find()` is usually the practical choice unless implementing the algorithm for learning.",
+        ("kmp", "knuth", "morris", "pratt", "pattern", "string", "search"), ("kmp algorithm", "knuth-morris-pratt"),
+    ),
+    KnowledgeEntry(
+        "What is the Rabin-Karp algorithm?",
+        "Rabin-Karp searches strings using a rolling hash to compare a pattern against text windows. It is O(n + m) on average, though hash collisions can require checking candidate matches and the worst case is slower. Python's `str.find()` is usually simpler for ordinary text search.",
+        ("rabin", "karp", "rolling", "hash", "pattern", "string", "algorithm"), ("rabin-karp", "rabin karp algorithm"),
+    ),
+    KnowledgeEntry(
+        "What are suffix trees and suffix arrays?",
+        "A suffix array stores the sorted starting positions of every suffix of a string; it is a compact way to support substring queries. A suffix tree is a more memory-intensive compressed trie of suffixes. Python has no built-in implementation; both are specialized text-indexing structures.",
+        ("suffix", "tree", "array", "string", "text", "index"), ("suffix tree", "suffix array", "suffix trees and suffix arrays"),
+    ),
+    KnowledgeEntry(
+        "What is a Bloom filter?",
+        "A Bloom filter is a compact probabilistic set-membership structure. It can say an item is definitely absent or probably present, but false positives are possible and false negatives are not (when used correctly). It does not store the original items and cannot delete safely without a counting variant.",
+        ("bloom", "filter", "probabilistic", "membership", "false", "positive"), ("bloom filter",),
+    ),
+    KnowledgeEntry(
+        "What is HyperLogLog?",
+        "HyperLogLog estimates the number of distinct items in a large stream using very little memory. It is approximate, not an exact set, and is useful when the dataset is too large to retain every unique value. It is typically implemented with a specialized library or data service.",
+        ("hyperloglog", "distinct", "cardinality", "estimate", "stream"), ("hyper log log", "hyperloglog"),
+    ),
+    KnowledgeEntry(
+        "What is a Count-Min Sketch?",
+        "A Count-Min Sketch is a compact probabilistic structure for estimating item frequencies in a stream. It can overestimate counts because of collisions, but does not underestimate them under the standard construction. It is useful for approximate heavy-hitter analysis.",
+        ("count", "min", "sketch", "frequency", "stream", "estimate"), ("count-min sketch", "count min sketch"),
+    ),
+    KnowledgeEntry(
+        "What is an AVL tree or red-black tree?",
+        "AVL and red-black trees are self-balancing binary search trees. AVL trees keep stricter height balance, often making lookup shallower; red-black trees allow looser balance and have efficient updates. Both provide O(log n) search, insertion, and deletion. Python does not include either as a built-in container.",
+        ("avl", "red", "black", "tree", "balance", "balanced"), ("avl tree", "red-black tree", "red black tree", "avl vs red-black"),
+    ),
+    KnowledgeEntry(
+        "What are B-trees and B+ trees?",
+        "B-trees are balanced multiway search trees designed to reduce disk or page reads. B+ trees keep records (or record pointers) in linked leaves, which makes range scans efficient. They are common in database and filesystem indexes; Python does not provide a built-in B-tree.",
+        ("b", "tree", "trees", "btree", "bplus", "index", "database"), ("b-tree", "b trees", "b+ tree", "b+ trees"),
+    ),
+    KnowledgeEntry(
+        "What are Tarjan's and Kosaraju's algorithms?",
+        "Tarjan's and Kosaraju's algorithms find strongly connected components in a directed graph in O(V + E) time. Kosaraju uses two DFS passes and the reversed graph; Tarjan uses one DFS pass with low-link values and a stack.",
+        ("tarjan", "kosaraju", "strongly", "connected", "component", "graph"), ("tarjan algorithm", "kosaraju algorithm", "tarjan and kosaraju"),
+    ),
+    KnowledgeEntry(
+        "What is a network flow algorithm?",
+        "A flow network is a directed graph with capacities; the max-flow problem finds the greatest flow from a source to a sink without exceeding capacities. Ford-Fulkerson augments paths in the residual graph; Dinic's algorithm uses level graphs and blocking flows and is often faster in practice.",
+        ("network", "flow", "maxflow", "capacity", "residual", "source", "sink"), ("network flow", "maximum flow", "max flow"),
+    ),
+    KnowledgeEntry(
+        "What are Ford-Fulkerson and Dinic's algorithms?",
+        "Both solve maximum flow. Ford-Fulkerson repeatedly finds an augmenting path in the residual graph; its runtime depends on how paths are chosen and it can be problematic with irrational capacities. Dinic builds level graphs with BFS and sends blocking flows with DFS, giving stronger complexity bounds for many graph classes.",
+        ("ford", "fulkerson", "dinic", "flow", "algorithm", "residual"), ("ford-fulkerson", "dinic algorithm", "dinic's algorithm"),
+    ),
+    KnowledgeEntry(
+        "What are k-d trees, quadtrees, and octrees?",
+        "A k-d tree partitions k-dimensional points using axis-aligned splits; quadtrees partition 2D space into four regions, and octrees partition 3D space into eight. They support spatial queries such as nearest-neighbor or region lookup, with performance depending on data and balance.",
+        ("k", "d", "dimensional", "kd", "tree", "quadtree", "octree", "spatial", "region"), ("k-d tree", "kd tree", "k d tree", "quadtree", "octree", "k dimensional tree"),
+    ),
+    KnowledgeEntry(
+        "What is an R-tree?",
+        "An R-tree indexes spatial objects by grouping their bounding rectangles, making it useful for range and intersection queries on geographic or multidimensional data. It is commonly used in spatial databases and libraries; Python has no built-in R-tree container.",
+        ("r", "tree", "spatial", "rectangle", "geographic", "index"), ("r-tree", "rtree", "r tree"),
+    ),
+    KnowledgeEntry(
+        "What are skip lists?",
+        "A skip list is a probabilistic ordered structure with multiple levels of forward links. Its search, insertion, and deletion take O(log n) expected time. It offers a simpler alternative to balanced trees in some systems, but Python has no built-in skip-list type.",
+        ("skip", "list", "ordered", "level", "probabilistic"), ("skip list", "skip lists"),
+    ),
+    KnowledgeEntry(
+        "What is an LSM tree?",
+        "A log-structured merge tree (LSM tree) buffers writes in memory, then merges sorted runs on disk. It favors write throughput and is used by storage engines such as key-value databases. Reads may consult several levels, and compaction controls that cost.",
+        ("lsm", "log", "structured", "merge", "tree", "storage", "database"), ("lsm tree", "log structured merge tree", "log-structured merge-tree"),
+    ),
+    KnowledgeEntry(
+        "What is an abstract syntax tree (AST)?",
+        "An abstract syntax tree represents source code as structured nodes such as expressions, calls, and statements. Python's `ast` module can parse and inspect Python source without executing it. ASTs are used by linters, formatters, compilers, and code-analysis tools.",
+        ("abstract", "syntax", "tree", "ast", "parser", "source", "code"), ("abstract syntax tree", "ast"),
+    ),
+    KnowledgeEntry(
+        "What are lexers, parsers, and parser combinators?",
+        "A lexer turns characters into tokens; a parser turns tokens into a structured representation such as a syntax tree. Parser combinators build larger parsers by composing smaller ones. Python's `ast` module parses Python syntax, while libraries such as Lark or pyparsing can help parse custom languages.",
+        ("lexer", "lexers", "parser", "parsers", "combinator", "token", "grammar"), ("lexer and parser", "parser combinators", "lexer parser combinators"),
+    ),
+    KnowledgeEntry(
+        "What are lock-free data structures and compare-and-swap?",
+        "Lock-free algorithms use atomic operations to make system-wide progress without ordinary locks. Compare-and-swap (CAS) atomically changes a value only if it still equals an expected value. Correct lock-free code is difficult and depends on memory-model guarantees; Python application code should usually use `threading` synchronization primitives.",
+        ("lock", "free", "structure", "structures", "cas", "compare", "swap", "atomic"), ("lock-free", "lock free data structures", "compare and swap", "cas-based"),
+    ),
+    KnowledgeEntry(
+        "What are cache-oblivious algorithms?",
+        "Cache-oblivious algorithms are designed to use memory hierarchies efficiently without hard-coding a cache size or block size. Recursive divide-and-conquer layouts are common examples. They are an advanced performance topic; measure real workloads before choosing a specialized design.",
+        ("cache", "oblivious", "algorithm", "memory", "hierarchy"), ("cache-oblivious algorithms", "cache oblivious"),
+    ),
+    KnowledgeEntry(
+        "What are approximation algorithms?",
+        "An approximation algorithm returns a solution with a provable quality bound when finding an exact optimum is too expensive. The approximation ratio compares its result with the optimal one. This is common for difficult optimization problems.",
+        ("approximation", "algorithm", "approximate", "ratio", "optimization", "optimal"), ("approximation algorithms", "approximation algorithm"),
+    ),
+    KnowledgeEntry(
+        "What are heuristics and metaheuristics?",
+        "A heuristic is a practical rule that aims for a good solution without guaranteeing optimality. A metaheuristic, such as simulated annealing or a genetic algorithm, guides a broader search process. Evaluate solution quality and runtime on representative cases.",
+        ("heuristic", "heuristics", "metaheuristic", "metaheuristics", "search", "optimization"), ("heuristics and metaheuristics", "metaheuristics"),
     ),
     KnowledgeEntry(
         "What is a dictionary?",
@@ -263,8 +433,20 @@ STOP_WORDS = {"a", "an", "and", "are", "can", "do", "does", "for", "how", "i", "
 
 
 def normalize(text: str) -> list[str]:
-    """Return lowercase words, treating common Python terms consistently."""
-    return re.findall(r"[a-z0-9_]+", text.lower())
+    """Return lowercase words with common English plurals reduced to their base form."""
+    words = re.findall(r"[a-z0-9_]+", text.lower())
+    normalized = []
+    for word in words:
+        if word == "tries":
+            word = "trie"
+        elif len(word) > 4 and word.endswith("ies"):
+            word = word[:-3] + "y"
+        elif len(word) > 5 and word.endswith(("sses", "shes", "ches", "xes", "zes")):
+            word = word[:-2]
+        elif len(word) > 3 and word.endswith("s") and not word.endswith(("ss", "us", "is")):
+            word = word[:-1]
+        normalized.append(word)
+    return normalized
 
 
 def find_answer(question: str) -> str:
