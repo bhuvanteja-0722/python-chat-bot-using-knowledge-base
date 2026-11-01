@@ -700,6 +700,66 @@ def merge_intervals(intervals):
         ("gil", "global", "interpreter", "lock", "thread", "cpu", "io", "parallelism"), ("global interpreter lock", "python threads gil", "gil in python"),
     ),
     KnowledgeEntry(
+        "How do I create a trie in Python?",
+        "A trie stores characters along paths and shares common prefixes. Represent a node as a dictionary of child characters and reserve a marker such as `None` for end-of-word. Insert each character in turn; exact lookup follows the same path and checks the marker, while prefix lookup only needs to reach the final prefix node. Operations take O(L) time for a word of length L.",
+        ("trie", "implement", "create", "python", "prefix", "insert", "lookup", "search"), ("trie implementation", "implement a trie", "trie data structure code"),
+    ),
+    KnowledgeEntry(
+        "How do I implement an LRU cache in Python?",
+        "`collections.OrderedDict` supports a simple least-recently-used cache: on access, call `move_to_end(key)`; after inserting, if capacity is exceeded call `popitem(last=False)`. For function-result caching, prefer `functools.lru_cache` when it fits the use case.",
+        ("lru", "cache", "least", "recently", "used", "ordered", "implement", "python", "evict"), ("lru cache implementation", "implement an lru cache", "least recently used cache"),
+    ),
+    KnowledgeEntry(
+        "How do I calculate the height of a binary tree?",
+        "First choose a convention. Counting nodes, an empty tree has height 0 and a leaf has height 1; recursively, `height(node) = 1 + max(height(node.left), height(node.right))`. This visits each node once, so it takes O(n) time and O(h) call-stack space for tree height h.",
+        ("height", "depth", "binary", "tree", "calculate", "recursive", "node"), ("binary tree height", "height of a binary tree", "maximum depth of a binary tree"),
+    ),
+    KnowledgeEntry(
+        "How do I detect a cycle in an undirected graph?",
+        "Run DFS from every unvisited vertex. During DFS, an edge to an already visited vertex indicates a cycle if it is not the edge back to the current node's parent. This takes O(V + E) time with an adjacency list; for multigraphs, track parent edge IDs rather than only parent vertices.",
+        ("cycle", "detect", "undirected", "graph", "dfs", "visited", "parent"), ("undirected graph cycle", "cycle in an undirected graph", "detect cycle in undirected graph"),
+    ),
+    KnowledgeEntry(
+        "How do I sum every fixed-size sliding window?",
+        "Compute the first window sum once. For each next window, subtract the outgoing item and add the incoming item, so each update takes O(1) and all windows take O(n): `current += values[right] - values[right - k]`. Check that `k` is positive and no larger than the input length.",
+        ("fixed", "size", "sliding", "window", "sum", "range", "array"), ("fixed-size sliding window", "fixed window sum", "sum of each window"),
+    ),
+    KnowledgeEntry(
+        "How do I count paths through a grid with obstacles?",
+        "Use dynamic programming: ways to reach a cell equal the ways from above plus the ways from the left; an obstacle contributes zero. A one-dimensional row array uses O(columns) space and O(rows × columns) time. Define whether diagonal moves are allowed before implementing it.",
+        ("grid", "path", "paths", "obstacle", "dynamic", "programming", "ways", "count"), ("unique paths with obstacles", "grid paths dynamic programming", "count paths in a grid"),
+    ),
+    KnowledgeEntry(
+        "How do I write a custom context manager?",
+        "For a generator-based context manager, use `contextlib.contextmanager`: acquire the resource before `yield`, and release it in a `finally` block after `yield`. For classes, implement `__enter__` and `__exit__`. Prefer `with` blocks so cleanup happens even if the body raises an exception.",
+        ("custom", "context", "manager", "contextmanager", "yield", "resource", "close"), ("write a context manager", "custom context manager", "contextmanager decorator"),
+    ),
+    KnowledgeEntry(
+        "What do else and finally do in try/except?",
+        "The `else` block runs only when the `try` block finishes without an exception. The `finally` block runs whether an exception happened or not, so it is useful for cleanup. A `with` statement is usually preferable for standard resources such as files and locks.",
+        ("else", "finally", "try", "except", "exception", "cleanup", "error"), ("try except else finally", "finally block", "else block in try"),
+    ),
+    KnowledgeEntry(
+        "What are positional-only and keyword-only arguments?",
+        "In a function signature, `/` marks parameters that must be passed positionally, and `*` marks parameters that must be passed by keyword. For example, `def scale(value, /, factor=1, *, rounded=False): ...` makes `value` positional-only and `rounded` keyword-only. This can make APIs clearer and easier to evolve.",
+        ("positional", "keyword", "only", "argument", "parameter", "slash", "asterisk", "signature"), ("keyword-only arguments", "positional-only arguments", "positional and keyword-only parameters"),
+    ),
+    KnowledgeEntry(
+        "How do I run async tasks concurrently with asyncio.gather?",
+        "Create coroutine objects and await `asyncio.gather(coro_one(), coro_two())` to run them concurrently on the event loop. This is useful for I/O-bound work; it does not make CPU-bound Python code execute in parallel by itself. Use `asyncio.run(main())` at a synchronous program entry point.",
+        ("asyncio", "gather", "async", "tasks", "concurrent", "coroutine", "await"), ("asyncio gather", "run coroutines concurrently", "gather async tasks"),
+    ),
+    KnowledgeEntry(
+        "What is the difference between str and bytes in Python?",
+        "`str` represents Unicode text; `bytes` represents a sequence of byte values. Encode text at an external boundary with `text.encode('utf-8')`, and decode bytes with `data.decode('utf-8')`. Choose the correct encoding when reading files or network data.",
+        ("str", "bytes", "string", "text", "unicode", "encode", "decode", "difference"), ("str vs bytes", "bytes versus string", "difference between str and bytes"),
+    ),
+    KnowledgeEntry(
+        "How do I merge dictionaries in Python?",
+        "On Python 3.9 and newer, `merged = first | second` creates a new dictionary; keys from `second` replace duplicate keys from `first`. Use `first.update(second)` to modify `first` in place. For older Python versions, `{**first, **second}` creates a merged dictionary.",
+        ("merge", "dictionary", "dict", "combine", "update", "mapping", "union"), ("merge two dictionaries", "combine dictionaries", "dictionary merge"),
+    ),
+    KnowledgeEntry(
         "What are common Python collection operation costs?",
         "Typical costs: list indexing is O(1), append is O(1) amortized, and inserting/removing at the front is O(n). Dict and set lookup are O(1) average. `deque` append/pop at either end are O(1). A heap peek is O(1), while push/pop are O(log n). Exact costs depend on the operation and implementation.",
         ("collection", "operation", "complexity", "cost", "list", "append", "dict", "set", "deque", "heap"), ("python data structure time complexity", "complexities of python collections", "list dict set complexity", "time complexity of list append", "time complexity of python list append", "list append complexity"),
@@ -782,6 +842,12 @@ def merge_intervals(intervals):
 )
 
 VISUALS_BY_QUESTION = {
+    "How do I create a trie in Python?": "trie",
+    "How do I implement an LRU cache in Python?": "hash-table",
+    "How do I calculate the height of a binary tree?": "tree",
+    "How do I detect a cycle in an undirected graph?": "graph",
+    "How do I sum every fixed-size sliding window?": "sliding-window",
+    "How do I count paths through a grid with obstacles?": "dynamic-programming",
     "How do I implement binary search in Python?": "binary-search",
     "How do I implement Dijkstra's algorithm in Python?": "dijkstra",
     "How do I implement topological sorting in Python?": "topological",
