@@ -19,7 +19,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is Python?",
         "Python is a high-level, general-purpose programming language known for readable syntax and a large standard library.",
-        ("python", "language", "programming"), ("what is python", "about python"),
+        ("python", "language"), ("what is python", "about python"),
     ),
     KnowledgeEntry(
         "How do I define a function?",
@@ -30,6 +30,11 @@ KNOWLEDGE_BASE = (
         "What are Python lists?",
         "A list is an ordered, mutable collection. Create one with square brackets, such as `numbers = [1, 2, 3]`. Use `append()` to add an item and indexing like `numbers[0]` to access one.",
         ("list", "lists", "append", "mutable", "collection"), ("python array", "add to a list"),
+    ),
+    KnowledgeEntry(
+        "What is a hash table or map?",
+        "A hash table (also called a hash map) stores key-value pairs and uses a hash function to find values quickly on average. Python's built-in `dict` is a hash table: `ages = {\"Ada\": 36}`. Keys must be hashable; collisions are handled internally. A plain `map` can also mean Python's `map(function, items)`, so use the surrounding context to distinguish them.",
+        ("hash", "table", "map", "mapping", "key", "value", "dict"), ("hash table", "hash map", "hash table map", "map data structure"),
     ),
     KnowledgeEntry(
         "How do I use a queue in Python?",
@@ -88,8 +93,38 @@ KNOWLEDGE_BASE = (
     ),
     KnowledgeEntry(
         "What is Big O notation?",
-        "Big O describes how an algorithm's time or memory use grows as input size grows. For example, scanning every item is O(n), while binary search on sorted data is O(log n). It describes growth rate, not exact runtime.",
-        ("big", "o", "complexity", "runtime", "space", "algorithm", "performance"), ("big o notation", "time complexity", "space complexity"),
+        "Big O notation describes how an algorithm's resource use grows as input size grows, ignoring constant factors. Common rates are O(1), O(log n), O(n), O(n log n), and O(n²). For example, binary search is O(log n), while scanning a list is O(n).",
+        ("big", "o", "notation", "asymptotic", "algorithm"), ("big o notation", "big-o notation", "order of growth"),
+    ),
+    KnowledgeEntry(
+        "What is time complexity?",
+        "Time complexity describes how an algorithm's running work grows with input size. A single pass is usually O(n); two nested passes over the same input are usually O(n²); binary search is O(log n). These are growth estimates, not a promise about elapsed seconds.",
+        ("time", "complexity", "runtime", "running", "algorithm", "growth"), ("time complexity", "runtime complexity"),
+    ),
+    KnowledgeEntry(
+        "What is space complexity?",
+        "Space complexity describes how extra memory use grows with input size. A loop that stores no input-sized data may use O(1) auxiliary space; copying an n-item list uses O(n). State whether you count the input itself when comparing algorithms.",
+        ("space", "complexity", "memory", "auxiliary", "algorithm", "growth"), ("space complexity", "memory complexity", "auxiliary space"),
+    ),
+    KnowledgeEntry(
+        "What are the two-pointer and sliding-window techniques?",
+        "Two pointers track two positions in a sequence, often moving inward or forward to solve a problem in one pass. A sliding window keeps a range of items and updates it as the endpoints move. Both can reduce repeated work from O(n²) to O(n), but the correct approach depends on the problem and its input ordering.",
+        ("two", "pointer", "pointers", "sliding", "window", "technique", "algorithm", "sequence"), ("two pointer technique", "two pointers", "sliding window", "two pointers sliding window"),
+    ),
+    KnowledgeEntry(
+        "What is a greedy algorithm?",
+        "A greedy algorithm makes the best-looking local choice at each step. It is correct only when those choices can be shown to lead to a global optimum; test the reasoning with a proof or counterexample. Greedy methods are common for interval scheduling and some coin systems.",
+        ("greedy", "approach", "algorithm", "local", "optimal"), ("greedy algorithm", "greedy approach"),
+    ),
+    KnowledgeEntry(
+        "What is dynamic programming?",
+        "Dynamic programming solves a problem by reusing answers to overlapping subproblems. Define the state, recurrence, and base cases; then use memoization (top-down) or a table (bottom-up). It often trades extra memory for less repeated computation.",
+        ("dynamic", "programming", "memoization", "tabulation", "subproblem", "recurrence"), ("dynamic programming", "dp", "memoization"),
+    ),
+    KnowledgeEntry(
+        "What is backtracking?",
+        "Backtracking explores candidate choices and reverses a choice when it cannot lead to a solution. It is commonly used for permutations, combinations, and constraint puzzles. Prune impossible branches early; the worst-case search can still be exponential.",
+        ("backtracking", "backtrack", "search", "candidate", "prune", "recursion"), ("backtracking algorithm", "recursion and backtracking"),
     ),
     KnowledgeEntry(
         "What is a dictionary?",
@@ -244,12 +279,16 @@ def find_answer(question: str) -> str:
 
     for entry in KNOWLEDGE_BASE:
         keywords = set(entry.keywords)
-        overlap = words & keywords
-        for word in words - overlap:
-            if len(word) >= 6:
-                close = get_close_matches(word, [key for key in keywords if len(key) >= 6], n=1, cutoff=0.82)
-                if close:
-                    overlap.add(close[0])
+        exact_overlap = words & keywords
+        overlap = set(exact_overlap)
+        # Allow a small typo only when the question already has an exact topic
+        # match. This keeps fuzzy matching from inventing a topic from one word.
+        if exact_overlap:
+            for word in words - exact_overlap:
+                if len(word) >= 6:
+                    close = get_close_matches(word, [key for key in keywords if len(key) >= 6], n=1, cutoff=0.82)
+                    if close:
+                        overlap.add(close[0])
         score = len(overlap) / max(1, len(words))
         for phrase in entry.aliases:
             phrase_words = " ".join(normalize(phrase))
@@ -260,8 +299,9 @@ def find_answer(question: str) -> str:
             best_entry = entry
 
     if best_entry is None or best_score < 0.25:
-        return ("I don't have a confident answer for that yet. I can help with Python strings and built-in types, "
-                "functions, collections, loops, exceptions, modules, classes, files, and packages. Try asking about one of those topics.")
+        return ("I don't have a confident answer for that yet. I can help with Python built-in types, data structures, "
+                "algorithms, complexity, functions, collections, loops, exceptions, modules, classes, files, and packages. "
+                "Try asking about one of those topics.")
     return best_entry.answer
 
 
