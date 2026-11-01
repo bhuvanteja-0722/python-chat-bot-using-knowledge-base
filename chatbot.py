@@ -37,6 +37,11 @@ KNOWLEDGE_BASE = (
         ("hash", "table", "map", "mapping", "key", "value", "dict"), ("hash table", "hash map", "hash table map", "map data structure"),
     ),
     KnowledgeEntry(
+        "What does Python's map() function do?",
+        "`map(function, iterable)` applies a function to each item and returns a lazy iterator. For example, `list(map(str.upper, [\"a\", \"b\"]))` gives `[\"A\", \"B\"]`. A list comprehension is often easier to read for simple transformations.",
+        ("map", "function", "iterable", "transform", "lazy", "built-in"), ("map function", "map() function", "python map function", "python's map", "python map", "map in python"),
+    ),
+    KnowledgeEntry(
         "How do I use a queue in Python?",
         "A queue is a first-in, first-out (FIFO) structure: add items at the back and remove them from the front. For an efficient queue, use `collections.deque` rather than removing index 0 from a list:\n\n```python\nfrom collections import deque\nqueue = deque()\nqueue.append(\"first\")  # enqueue\nitem = queue.popleft()   # dequeue\n```",
         ("queue", "fifo", "enqueue", "dequeue", "first-in-first-out"), ("fifo queue", "python queue", "queue data structure"),
@@ -129,7 +134,12 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is a tree data structure?",
         "A tree is a hierarchical structure of nodes connected by edges, often with one root. Python has no general-purpose built-in tree container; represent nodes with a small class or dataclass and store child nodes in a list or dictionary.",
-        ("tree", "node", "root", "child", "parent", "hierarchy"), ("tree data structure", "binary tree"),
+        ("tree", "node", "root", "child", "parent", "hierarchy"), ("tree", "tree data structure", "binary tree"),
+    ),
+    KnowledgeEntry(
+        "What is a binary tree?",
+        "A binary tree is a tree where each node has at most two children, commonly called left and right. It is a structure, not automatically a search tree: a binary search tree adds an ordering rule. Python has no built-in binary-tree container, so nodes are commonly modeled with a class or dataclass.",
+        ("binary", "tree", "left", "right", "child", "children"), ("binary tree", "binary trees"),
     ),
     KnowledgeEntry(
         "What is a binary search tree?",
@@ -162,6 +172,63 @@ KNOWLEDGE_BASE = (
         ("bfs", "dfs", "breadth", "depth", "search", "traversal", "graph"), ("breadth first search", "depth first search", "graph traversal"),
     ),
     KnowledgeEntry(
+        "How do I find a shortest path in an unweighted graph?",
+        "Use breadth-first search (BFS): mark the start as visited, then explore neighbors with a `deque`. The first time BFS reaches a vertex, it has found a path with the fewest edges. Store each vertex's parent if you need to reconstruct the route. This takes O(V + E) time with an adjacency list.",
+        ("shortest", "path", "unweighted", "graph", "bfs", "breadth", "deque", "parent"), ("shortest path in an unweighted graph", "unweighted shortest path", "bfs shortest path"),
+    ),
+    KnowledgeEntry(
+        "How do I choose a shortest-path algorithm?",
+        "Choose by edge weights: BFS finds paths with the fewest edges in an unweighted graph; Dijkstra handles nonnegative weights; Bellman-Ford supports negative weights and can detect a reachable negative cycle. For all-pairs distances on a small dense graph, Floyd-Warshall is another option.",
+        ("shortest", "path", "graph", "weight", "bfs", "dijkstra", "bellman", "floyd"), ("shortest path", "find a shortest path", "shortest paths in a graph"),
+    ),
+    KnowledgeEntry(
+        "How do I solve the Two Sum problem?",
+        """Scan the numbers once while storing values already seen. For each number, check whether its complement (`target - number`) is in a dictionary; if so, return the two indices. This takes O(n) average time and O(n) extra space:
+
+```python
+def two_sum(nums, target):
+    seen = {}
+    for i, value in enumerate(nums):
+        complement = target - value
+        if complement in seen:
+            return seen[complement], i
+        seen[value] = i
+    return None
+```""",
+        ("two", "sum", "target", "complement", "indices", "dictionary", "hash"), ("two-sum", "two sum problem", "find two numbers that add to a target"),
+    ),
+    KnowledgeEntry(
+        "How do prefix sums work?",
+        "A prefix-sum array stores cumulative totals so a range sum can be answered with two lookups. Let `prefix[0] = 0` and `prefix[i + 1] = prefix[i] + values[i]`; then the sum from index `left` through `right` is `prefix[right + 1] - prefix[left]`. Building it takes O(n), and each range query takes O(1).",
+        ("prefix", "sum", "range", "cumulative", "array", "query"), ("prefix sum", "prefix sums", "range sum queries"),
+    ),
+    KnowledgeEntry(
+        "How do I merge overlapping intervals?",
+        """Sort intervals by start, then merge each interval into the previous one when they overlap. Sorting dominates the cost, so this is O(n log n):
+
+```python
+def merge_intervals(intervals):
+    merged = []
+    for start, end in sorted(intervals):
+        if merged and start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    return merged
+```""",
+        ("merge", "interval", "overlap", "range", "sort"), ("merge intervals", "merge overlapping intervals", "interval merging"),
+    ),
+    KnowledgeEntry(
+        "How do I find the kth largest value?",
+        "For a small k, keep a min-heap of at most k values; its root is the kth largest after the scan. This takes O(n log k) time and O(k) space. Python's `heapq.nlargest(k, values)[-1]` is convenient when k is valid and the input is nonempty.",
+        ("kth", "largest", "smallest", "heap", "priority", "selection", "top"), ("k-th largest", "kth largest element", "find the kth largest"),
+    ),
+    KnowledgeEntry(
+        "How can I detect a cycle in a linked list?",
+        "Floyd's tortoise-and-hare algorithm uses two references: move `slow` one node and `fast` two nodes at a time. If they meet, there is a cycle; if `fast` reaches `None`, there is not. It takes O(n) time and O(1) extra space.",
+        ("cycle", "linked", "list", "floyd", "tortoise", "hare", "slow", "fast"), ("linked list cycle", "detect a cycle in a linked list", "cycle detection in linked list"),
+    ),
+    KnowledgeEntry(
         "How does binary search work?",
         "Binary search finds a value in a sorted sequence by repeatedly halving the search range, taking O(log n) comparisons. The input must already be sorted. Python's `bisect` module provides insertion-point searches for sorted lists.",
         ("binary", "search", "sorted", "bisect", "logarithmic"), ("binary search", "search a sorted list"),
@@ -174,7 +241,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "How do I sort values in Python?",
         "Use `sorted(values)` to make a new sorted list or `values.sort()` to sort a list in place. Pass `key=` to choose what to compare, and `reverse=True` for descending order. Python's sort is stable.",
-        ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sort a list", "sorting a list"),
+        ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sort a list", "sorting a list", "sort values in python"),
     ),
     KnowledgeEntry(
         "How do common sorting algorithms compare?",
@@ -204,7 +271,12 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is Big O notation?",
         "Big O notation describes how an algorithm's resource use grows as input size grows, ignoring constant factors. Common rates are O(1), O(log n), O(n), O(n log n), and O(n²). For example, binary search is O(log n), while scanning a list is O(n).",
-        ("big", "o", "notation", "asymptotic", "algorithm"), ("big o notation", "big-o notation", "order of growth"),
+        ("big", "o", "notation", "asymptotic", "algorithm"), ("big o notation", "big-o notation", "order of growth", "complexity analysis"),
+    ),
+    KnowledgeEntry(
+        "What is complexity analysis?",
+        "Complexity analysis estimates how an algorithm's time and extra memory grow with input size. Big O summarizes the growth rate; time complexity measures work, while space complexity measures memory. State assumptions and check the dominant operations rather than treating Big O as elapsed seconds.",
+        ("complexity", "analysis", "time", "space", "growth", "algorithm"), ("analyze complexity", "algorithm complexity analysis"),
     ),
     KnowledgeEntry(
         "What is time complexity?",
@@ -269,7 +341,27 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is Dijkstra's algorithm?",
         "Dijkstra's algorithm finds shortest paths from one source when edge weights are nonnegative. A min-priority queue (Python's `heapq`) selects the next closest vertex. For negative edge weights, use an algorithm designed for them, such as Bellman-Ford.",
-        ("dijkstra", "algorithm", "shortest", "path", "weight", "graph"), ("dijkstra algorithm", "dijkstra's algorithm", "shortest path"),
+        ("dijkstra", "algorithm", "shortest", "path", "weight", "graph"), ("dijkstra algorithm", "dijkstra's algorithm", "shortest path with nonnegative weights"),
+    ),
+    KnowledgeEntry(
+        "What is the Bellman-Ford algorithm?",
+        "Bellman-Ford finds single-source shortest paths even when some edge weights are negative. It relaxes every edge up to V − 1 times, then checks once more for a reachable negative cycle. Its O(VE) running time is usually slower than Dijkstra on nonnegative graphs.",
+        ("bellman", "ford", "shortest", "path", "negative", "weight", "cycle"), ("bellman ford", "bellman-ford algorithm", "negative-weight shortest paths"),
+    ),
+    KnowledgeEntry(
+        "What is the Floyd-Warshall algorithm?",
+        "Floyd-Warshall computes shortest-path distances between every pair of vertices. It incrementally allows each vertex as an intermediate stop, using O(V³) time and O(V²) space. It supports negative edges, but a negative cycle means finite shortest paths are not defined for affected pairs.",
+        ("floyd", "warshall", "all", "pairs", "shortest", "path", "distance", "graph"), ("floyd-warshall", "floyd warshall algorithm", "all-pairs shortest paths"),
+    ),
+    KnowledgeEntry(
+        "What is counting sort or radix sort?",
+        "Counting sort counts occurrences and is useful when integer keys come from a reasonably small range; its time and memory depend on that range. Radix sort orders values digit by digit and can be linear in the number of items times the digit count. They avoid comparison sorting's general O(n log n) bound by using assumptions about the keys.",
+        ("counting", "radix", "sort", "sorting", "integer", "digit", "count"), ("counting sort", "radix sort", "non-comparison sorting"),
+    ),
+    KnowledgeEntry(
+        "What is quickselect?",
+        "Quickselect partitions around a pivot like quicksort but continues only in the partition containing the requested rank. It finds the kth smallest or largest item in O(n) expected time, though O(n²) is possible in the worst case. Python's `heapq` is often simpler for small k.",
+        ("quickselect", "selection", "kth", "partition", "pivot", "largest", "smallest"), ("quick select", "kth selection", "selection algorithm"),
     ),
     KnowledgeEntry(
         "What is Prim's algorithm?",
@@ -392,6 +484,41 @@ KNOWLEDGE_BASE = (
         ("approximation", "algorithm", "approximate", "ratio", "optimization", "optimal"), ("approximation algorithms", "approximation algorithm"),
     ),
     KnowledgeEntry(
+        "What is branch and bound?",
+        "Branch and bound searches a decision tree of candidate solutions. It keeps the best complete solution found so far and uses bounds to prune branches that cannot beat it. It can solve exact optimization problems, though worst-case runtime may still be exponential.",
+        ("branch", "bound", "optimization", "prune", "search", "decision"), ("branch-and-bound", "branch and bound algorithm"),
+    ),
+    KnowledgeEntry(
+        "What is a randomized algorithm?",
+        "A randomized algorithm uses random choices while it runs. A Las Vegas algorithm always returns a correct answer but has variable runtime; a Monte Carlo algorithm has a bounded runtime but a small probability of error. Random pivots can improve quicksort's expected behavior, and reservoir sampling selects from a stream with limited memory.",
+        ("randomized", "random", "probability", "randomness", "monte", "carlo", "las", "vegas", "algorithm"), ("randomized algorithms", "random algorithm"),
+    ),
+    KnowledgeEntry(
+        "What does NP-hard mean?",
+        "An NP-hard problem is at least as difficult as every problem in NP under polynomial-time reductions. NP-complete problems are both in NP and NP-hard. These labels do not prove that every instance is slow, but no polynomial-time exact algorithm is known for the general cases; practical solvers use special cases, heuristics, or approximation methods.",
+        ("np", "hard", "complete", "complexity", "reduction", "polynomial"), ("np-hard", "np hard problem", "np-complete"),
+    ),
+    KnowledgeEntry(
+        "What is A* search?",
+        "A* finds a low-cost path using priority f(n) = g(n) + h(n): g is the cost so far and h estimates the remaining cost. With a suitable admissible heuristic, A* returns an optimal path; its memory use can be large. It is used for route finding and puzzles.",
+        ("a", "star", "astar", "search", "heuristic", "path", "shortest", "priority"), ("a-star search", "a* search", "astar search", "a star algorithm"),
+    ),
+    KnowledgeEntry(
+        "What is Kruskal's algorithm?",
+        "Kruskal's algorithm builds a minimum spanning forest by sorting edges by weight and adding an edge only when it joins two different components. A disjoint-set (union-find) structure detects cycles efficiently. For a connected graph, the result is a minimum spanning tree.",
+        ("kruskal", "minimum", "spanning", "tree", "edge", "weight", "union", "find"), ("kruskal algorithm", "kruskal's algorithm", "minimum spanning tree kruskal"),
+    ),
+    KnowledgeEntry(
+        "How do I sort a dictionary in Python?",
+        "A dictionary preserves insertion order, but you can create a sorted list of its keys or items. Sort by key with `sorted(data.items())`, or by value with `sorted(data.items(), key=lambda item: item[1])`. Wrap the result with `dict(...)` if you need a new dictionary in that order.",
+        ("sort", "sorting", "dictionary", "dict", "key", "value", "items"), ("sort a dictionary", "sort dictionary by value", "sort dictionary by key"),
+    ),
+    KnowledgeEntry(
+        "What is the difference between a list and a tuple?",
+        "Both are ordered sequences. A list is mutable (`[1, 2]`), so items can be added or changed; a tuple is immutable (`(1, 2)`) and suits fixed groups of values. Both support indexing and iteration. Choose based on whether the collection should change, not on a guaranteed speed advantage.",
+        ("difference", "list", "tuple", "mutable", "immutable", "sequence"), ("list vs tuple", "list and tuple difference", "difference between list and tuple"),
+    ),
+    KnowledgeEntry(
         "What are heuristics and metaheuristics?",
         "A heuristic is a practical rule that aims for a good solution without guaranteeing optimality. A metaheuristic, such as simulated annealing or a genetic algorithm, guides a broader search process. Evaluate solution quality and runtime on representative cases.",
         ("heuristic", "heuristics", "metaheuristic", "metaheuristics", "search", "optimization"), ("heuristics and metaheuristics", "metaheuristics"),
@@ -399,7 +526,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is a dictionary?",
         "A dictionary stores key-value pairs. For example, `person = {\"name\": \"Ada\"}` and `person[\"name\"]` returns `\"Ada\"`. Use `person.get(\"age\")` when a key may be missing.",
-        ("dictionary", "dict", "key", "value", "mapping"), ("key value", "hash map"),
+        ("dictionary", "dict", "key", "value", "mapping"), ("dictionary", "key value", "hash map"),
     ),
     KnowledgeEntry(
         "How do for loops work?",
@@ -464,7 +591,7 @@ KNOWLEDGE_BASE = (
     KnowledgeEntry(
         "What is a string in Python?",
         "A string (`str`) is text. Write it inside single or double quotes, for example `name = \"Ada\"`. Strings are immutable; use methods such as `name.upper()` to create a changed result. Convert a value to text with `str(value)`.",
-        ("str", "string", "strings", "text", "character", "characters"), ("what is str", "python str", "string type"),
+        ("str", "string", "strings", "text", "character", "characters"), ("what is str", "python str", "string type", "string", "strings"),
     ),
     KnowledgeEntry(
         "What is a float in Python?",
@@ -540,12 +667,20 @@ VISUALS_BY_QUESTION = {
     "How can a stack evaluate a postfix expression?": "stack",
     "What is a linked list?": "linked-list",
     "What is a tree data structure?": "tree",
+    "What is a binary tree?": "tree",
     "What is a binary search tree?": "bst",
     "What is a heap?": "heap",
     "How do I make a priority queue?": "heap",
     "What is a graph data structure?": "graph",
     "What is the difference between an adjacency list and matrix?": "graph",
     "What are BFS and DFS?": "graph-search",
+    "How do I find a shortest path in an unweighted graph?": "graph-search",
+    "How do I choose a shortest-path algorithm?": "graph",
+    "How do I solve the Two Sum problem?": "two-sum",
+    "How do prefix sums work?": "prefix-sum",
+    "How do I merge overlapping intervals?": "sorting",
+    "How do I find the kth largest value?": "heap",
+    "How can I detect a cycle in a linked list?": "linked-list",
     "What is Prim's algorithm?": "graph-search",
     "What is the Knight's Tour problem?": "graph-search",
     "How can I solve a maze with search?": "graph-search",
@@ -559,17 +694,26 @@ VISUALS_BY_QUESTION = {
     "What is insertion sort?": "sorting",
     "What is sequential or linear search?": "search",
     "What is Big O notation?": "complexity",
+    "What is complexity analysis?": "complexity",
     "What is time complexity?": "complexity",
     "What is space complexity?": "complexity",
     "What are the two-pointer and sliding-window techniques?": "sliding-window",
     "What is dynamic programming?": "dynamic-programming",
     "What is backtracking?": "backtracking",
+    "What is branch and bound?": "backtracking",
+    "What is A* search?": "graph-search",
+    "What is Kruskal's algorithm?": "graph-search",
+    "How do I sort a dictionary in Python?": "sorting",
+    "What is the difference between a list and a tuple?": "array",
     "What is a trie?": "trie",
     "What are segment trees and Fenwick trees?": "range-trees",
     "What is disjoint set union (union-find)?": "union-find",
     "What is a monotonic stack or queue?": "monotonic",
     "What is topological sorting?": "topological",
     "What is Dijkstra's algorithm?": "dijkstra",
+    "What is the Bellman-Ford algorithm?": "graph",
+    "What is the Floyd-Warshall algorithm?": "graph",
+    "What is counting sort or radix sort?": "sorting",
     "What is a Bloom filter?": "bloom-filter",
     "How do I check whether two strings are anagrams?": "anagram",
     "How do I check balanced parentheses?": "parentheses",
@@ -577,15 +721,18 @@ VISUALS_BY_QUESTION = {
     "What is recursion?": "recursion",
 }
 
-STOP_WORDS = {"a", "an", "and", "are", "can", "do", "does", "for", "how", "i", "in", "is", "it", "of", "python", "the", "to", "what", "with", "you", "your"}
+STOP_WORDS = {"a", "an", "and", "are", "can", "data", "do", "does", "for", "how", "i", "in", "is", "it", "of", "python", "runtime", "structure", "to", "what", "with", "algorithm", "you", "your"}
 
 
 def normalize(text: str) -> list[str]:
     """Return lowercase words with common English plurals reduced to their base form."""
-    words = re.findall(r"[a-z0-9_]+", text.lower())
+    text = re.sub(r"\ba\s*\*", "a star", text.lower())
+    words = re.findall(r"[a-z0-9_]+", text)
     normalized = []
     for word in words:
-        if word == "tries":
+        if word in {"args", "kwargs", "itertools", "functools"}:
+            pass  # These words end in s but are not ordinary English plurals.
+        elif word == "tries":
             word = "trie"
         elif len(word) > 4 and word.endswith("ies"):
             word = word[:-3] + "y"
@@ -599,18 +746,23 @@ def normalize(text: str) -> list[str]:
 
 def find_entry(question: str) -> KnowledgeEntry | None:
     """Find the best matching knowledge entry using phrase and keyword scoring."""
+    if re.search(r"\bmap\s*\(", question, re.IGNORECASE):
+        return next(entry for entry in KNOWLEDGE_BASE if entry.question == "What does Python's map() function do?")
     words = set(normalize(question)) - STOP_WORDS
     if not words:
         if "python" in normalize(question):
             return next(entry for entry in KNOWLEDGE_BASE if entry.question == "What is Python?")
         return None
 
-    question_normalized = " ".join(normalize(question))
+    question_tokens = normalize(question)
+    question_normalized = " ".join(question_tokens)
     best_entry: KnowledgeEntry | None = None
     best_score = 0.0
 
     for entry in KNOWLEDGE_BASE:
-        keywords = set(entry.keywords)
+        # Normalize knowledge-base terms too, so plural forms match singular
+        # keywords while technical names remain searchable.
+        keywords = {word for keyword in entry.keywords for word in normalize(keyword)}
         exact_overlap = words & keywords
         overlap = set(exact_overlap)
         # Allow a small typo only when the question already has an exact topic
@@ -627,10 +779,24 @@ def find_entry(question: str) -> KnowledgeEntry | None:
         # word ladder from winning over the graph overview itself.
         title_words = set(normalize(entry.question)) - STOP_WORDS
         score += 0.2 * len(words & title_words) / max(1, len(words))
+        alias_hit = False
         for phrase in entry.aliases:
-            phrase_words = " ".join(normalize(phrase))
-            if phrase_words and phrase_words in question_normalized:
-                score += 1.0
+            phrase_tokens = normalize(phrase)
+            phrase_words = " ".join(phrase_tokens)
+            # Multi-word aliases may occur within a natural-language question.
+            # A one-word alias should only boost a topic-only prompt; otherwise
+            # generic terms such as "string" can hijack a specific question.
+            alias_matches = (
+                bool(phrase_tokens)
+                and (
+                    (len(phrase_tokens) == 1 and words == set(phrase_tokens))
+                    or (len(phrase_tokens) > 1 and phrase_words in question_normalized)
+                )
+            )
+            if alias_matches:
+                alias_hit = True
+        if alias_hit:
+            score += 1.0
         if score > best_score:
             best_score = score
             best_entry = entry
