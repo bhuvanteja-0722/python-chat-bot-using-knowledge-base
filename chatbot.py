@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from difflib import get_close_matches
 from dataclasses import dataclass
 
 
@@ -29,6 +30,66 @@ KNOWLEDGE_BASE = (
         "What are Python lists?",
         "A list is an ordered, mutable collection. Create one with square brackets, such as `numbers = [1, 2, 3]`. Use `append()` to add an item and indexing like `numbers[0]` to access one.",
         ("list", "lists", "append", "mutable", "collection"), ("python array", "add to a list"),
+    ),
+    KnowledgeEntry(
+        "How do I use a queue in Python?",
+        "A queue is a first-in, first-out (FIFO) structure: add items at the back and remove them from the front. For an efficient queue, use `collections.deque` rather than removing index 0 from a list:\n\n```python\nfrom collections import deque\nqueue = deque()\nqueue.append(\"first\")  # enqueue\nitem = queue.popleft()   # dequeue\n```",
+        ("queue", "fifo", "enqueue", "dequeue", "first-in-first-out", "deque"), ("fifo queue", "python queue", "queue data structure"),
+    ),
+    KnowledgeEntry(
+        "How do I make a circular queue?",
+        "A circular queue reuses a fixed-size buffer as its indices wrap around. For a simple bounded queue, `deque(maxlen=capacity)` is convenient, but it silently discards the oldest item when full. If a full queue should reject new items instead, check the capacity before appending:\n\n```python\nfrom collections import deque\ncapacity = 3\nqueue = deque()\n\ndef enqueue(item):\n    if len(queue) == capacity:\n        raise OverflowError(\"queue is full\")\n    queue.append(item)\n```\nUse `popleft()` to dequeue. For a thread-safe producer/consumer queue, use `queue.Queue`.",
+        ("circular", "queue", "fifo", "ring", "buffer", "wrap", "deque", "capacity"), ("circular queue", "circular buffer", "ring buffer"),
+    ),
+    KnowledgeEntry(
+        "How do I use a thread-safe queue?",
+        "Use `queue.Queue` to safely pass items between threads. Call `put(item)` to add and `get()` to remove the next item; `get()` blocks while the queue is empty. Call `task_done()` after processing each item when coordinating with `join()`.",
+        ("queue", "thread", "thread-safe", "producer", "consumer", "put", "get"), ("queue module", "thread safe queue", "producer consumer queue"),
+    ),
+    KnowledgeEntry(
+        "How do I implement a stack?",
+        "A stack is last-in, first-out (LIFO). A Python list works well: use `append(item)` to push and `pop()` to remove the most recently added item. Use `deque` if you need fast operations at both ends.",
+        ("stack", "lifo", "push", "pop", "last-in-first-out"), ("stack data structure", "python stack"),
+    ),
+    KnowledgeEntry(
+        "How do I make a priority queue?",
+        "Use the standard-library `heapq` module for a min-priority queue. Store `(priority, item)` pairs; the smallest priority is removed first:\n\n```python\nimport heapq\ntasks = []\nheapq.heappush(tasks, (2, \"later\"))\nheapq.heappush(tasks, (1, \"sooner\"))\npriority, task = heapq.heappop(tasks)\n```",
+        ("priority", "queue", "heap", "heapq", "priorityqueue"), ("priority queue", "min heap", "heap data structure"),
+    ),
+    KnowledgeEntry(
+        "What is a linked list?",
+        "A linked list is a chain of nodes where each node points to the next. Python does not have a built-in linked-list type; lists and `collections.deque` are usually faster and simpler for everyday work. Linked lists are mainly useful when learning data structures or when node-based operations are required.",
+        ("linked", "list", "node", "pointer", "next"), ("linked list", "singly linked list", "doubly linked list"),
+    ),
+    KnowledgeEntry(
+        "What is a tree data structure?",
+        "A tree is a hierarchical structure of nodes connected by edges, often with one root. Python has no general-purpose built-in tree container; represent nodes with a small class or dataclass and store child nodes in a list or dictionary.",
+        ("tree", "node", "root", "child", "parent", "hierarchy"), ("tree data structure", "binary tree"),
+    ),
+    KnowledgeEntry(
+        "What is a graph data structure?",
+        "A graph contains vertices (nodes) connected by edges. A common Python representation is an adjacency dictionary, such as `graph = {\"A\": [\"B\", \"C\"]}`. Use a set for neighbors when fast membership checks matter.",
+        ("graph", "vertex", "vertices", "edge", "adjacency", "node"), ("graph data structure", "adjacency list"),
+    ),
+    KnowledgeEntry(
+        "What are BFS and DFS?",
+        "Breadth-first search (BFS) explores a graph level by level, usually with a queue. Depth-first search (DFS) follows a path before backtracking, using a stack or recursion. Track visited nodes so cycles do not cause infinite traversal.",
+        ("bfs", "dfs", "breadth", "depth", "search", "traversal", "graph"), ("breadth first search", "depth first search", "graph traversal"),
+    ),
+    KnowledgeEntry(
+        "How does binary search work?",
+        "Binary search finds a value in a sorted sequence by repeatedly halving the search range, taking O(log n) comparisons. The input must already be sorted. Python's `bisect` module provides insertion-point searches for sorted lists.",
+        ("binary", "search", "sorted", "bisect", "logarithmic"), ("binary search", "search a sorted list"),
+    ),
+    KnowledgeEntry(
+        "How do I sort values in Python?",
+        "Use `sorted(values)` to make a new sorted list or `values.sort()` to sort a list in place. Pass `key=` to choose what to compare, and `reverse=True` for descending order. Python's sort is stable.",
+        ("sort", "sorting", "sorted", "order", "key", "reverse"), ("sort a list", "sorting a list"),
+    ),
+    KnowledgeEntry(
+        "What is Big O notation?",
+        "Big O describes how an algorithm's time or memory use grows as input size grows. For example, scanning every item is O(n), while binary search on sorted data is O(log n). It describes growth rate, not exact runtime.",
+        ("big", "o", "complexity", "runtime", "space", "algorithm", "performance"), ("big o notation", "time complexity", "space complexity"),
     ),
     KnowledgeEntry(
         "What is a dictionary?",
@@ -184,6 +245,11 @@ def find_answer(question: str) -> str:
     for entry in KNOWLEDGE_BASE:
         keywords = set(entry.keywords)
         overlap = words & keywords
+        for word in words - overlap:
+            if len(word) >= 6:
+                close = get_close_matches(word, [key for key in keywords if len(key) >= 6], n=1, cutoff=0.82)
+                if close:
+                    overlap.add(close[0])
         score = len(overlap) / max(1, len(words))
         for phrase in entry.aliases:
             phrase_words = " ".join(normalize(phrase))

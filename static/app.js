@@ -38,7 +38,13 @@ function appendMessage(role, text, typing = false) {
 }
 
 function scrollToLatest() {
-  document.querySelector('.conversation').scrollTo({ top: document.querySelector('.conversation').scrollHeight, behavior: 'smooth' });
+  const conversation = document.querySelector('.conversation');
+  requestAnimationFrame(() => {
+    conversation.scrollTo({
+      top: conversation.scrollHeight,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+  });
 }
 
 function updateComposer() {
