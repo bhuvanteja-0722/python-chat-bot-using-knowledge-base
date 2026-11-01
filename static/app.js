@@ -17,10 +17,10 @@ function formatAnswer(text) {
     return '\u0000' + (codeBlocks.length - 1) + '\u0000';
   });
   safe = safe.replace(/`([^`]+)`/g, '<code>$1</code>');
-  return safe.split(/\n\n+/).map((part) => {
-    const block = part.match(/^\u0000(\d+)\u0000$/);
-    return block ? codeBlocks[Number(block[1])] : '<p>' + part.replace(/\n/g, '<br>') + '</p>';
-  }).join('');
+  return safe.split(/\n\n+/).map((part) => part.split(/\u0000(\d+)\u0000/g).map((segment, index) => {
+    if (index % 2) return codeBlocks[Number(segment)];
+    return segment.trim() ? '<p>' + segment.replace(/\n/g, '<br>') + '</p>' : '';
+  }).join('')).join('');
 }
 
 function appendMessage(role, text, typing = false) {
