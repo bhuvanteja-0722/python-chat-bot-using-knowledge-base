@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="A friendly Python programming assistant, powered by a curated local knowledge base.">
+  <title>PyPal — Python, made clearer</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Sidebar">
+      <a class="brand" href="/" aria-label="PyPal home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36"><path d="M18 4c-7 0-7 3-7 7v4h8v2H8c-3 0-5 2-5 6s2 6 5 6h4v-5c0-3 2-5 5-5h7c2 0 3-1 3-3v-5c0-5-3-7-9-7Zm-4 5a1.6 1.6 0 1 1 0 3.2A1.6 1.6 0 0 1 14 9Z"/><path d="M18 32c7 0 7-3 7-7v-4h-8v-2h11c3 0 5-2 5-6s-2-6-5-6h-4v5c0 3-2 5-5 5h-7c-2 0-3 1-3 3v5c0 5 3 7 9 7Zm4-5a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z"/></svg></span>
+        <span class="brand-name">pypal<span>.</span></span>
+      </a>
+
+      <button class="new-chat" id="new-chat" type="button"><span aria-hidden="true">＋</span> New chat <kbd>⌘ K</kbd></button>
+
+      <div class="side-section">
+        <p class="side-label">YOUR ASSISTANT</p>
+        <div class="assistant-card">
+          <span class="assistant-avatar" aria-hidden="true">Py</span>
+          <span class="assistant-details"><strong>Python helper</strong><small>Ready when you are</small></span>
+          <span class="online-dot" title="Online"></span>
+        </div>
+      </div>
+
+      <div class="side-section topics-section">
+        <p class="side-label">EXPLORE TOPICS</p>
+        <button class="topic-link" data-question="How do I define a function?" type="button"><span>ƒ</span> Functions</button>
+        <button class="topic-link" data-question="What are Python lists?" type="button"><span>▤</span> Lists &amp; dictionaries</button>
+        <button class="topic-link" data-question="How do for loops work?" type="button"><span>↻</span> Loops</button>
+        <button class="topic-link" data-question="How do I handle exceptions?" type="button"><span>⚠</span> Error handling</button>
+        <button class="topic-link" data-question="How do I create a class?" type="button"><span>◇</span> Classes &amp; objects</button>
+        <button class="topic-link" data-question="How do I read a file?" type="button"><span>▧</span> Files &amp; modules</button>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="privacy-note"><span aria-hidden="true">✳</span><p><strong>Private by design</strong><br>Your questions stay on this device.</p></div>
+        <div class="profile"><span class="profile-avatar">Y</span><span><strong>Your workspace</strong><small>Personal edition</small></span><span class="profile-menu">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark small" aria-hidden="true">Py</span><strong>pypal<span>.</span></strong></div>
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong>Python helper</strong></div>
+        <div class="topbar-right"><span class="local-label"><span></span> Local knowledge base</span><button class="icon-button" id="clear-chat" type="button" aria-label="Clear conversation" title="Clear conversation"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M8 5V3h4v2m3 0-.7 11H5.7L5 5m3 3v5m4-5v5"/></svg></button></div>
+      </header>
+
+      <section class="conversation" aria-live="polite" aria-label="Conversation">
+        <div class="welcome" id="welcome">
+          <div class="welcome-icon"><span>Py</span><i></i></div>
+          <div class="eyebrow"><span></span> YOUR PYTHON SIDEKICK</div>
+          <h1>Python, made<br><em>clearer.</em></h1>
+          <p class="welcome-copy">Stuck on something? Ask a question and get a simple, practical answer. No jargon, just the help you need.</p>
+          <div class="suggestion-label">A FEW IDEAS TO GET STARTED</div>
+          <div class="suggestions">
+            <button class="suggestion" data-question="How do I define a function?" type="button"><span class="suggestion-icon lilac">ƒ</span><span><strong>Write a function</strong><small>Learn the basics of `def`</small></span><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-question="What is a list comprehension?" type="button"><span class="suggestion-icon mint">[ ]</span><span><strong>Explore list comprehensions</strong><small>Write cleaner Python lists</small></span><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-question="How do I handle exceptions?" type="button"><span class="suggestion-icon peach">!</span><span><strong>Handle an error</strong><small>Make your code more robust</small></span><span class="suggestion-arrow">↗</span></button>
+          </div>
+        </div>
+        <div class="messages" id="messages"></div>
+      </section>
+
+      <footer class="composer-wrap">
+        <form class="composer" id="chat-form">
+          <label class="sr-only" for="question">Ask a Python question</label>
+          <textarea id="question" rows="1" maxlength="2000" placeholder="Ask anything about Python…" autocomplete="off"></textarea>
+          <div class="composer-bottom"><span class="composer-hint"><kbd>↵</kbd> to send <span class="hint-divider">·</span> <kbd>⇧ ↵</kbd> for a new line</span><span class="composer-actions"><span id="char-count">0 / 2,000</span><button class="send-button" id="send-button" type="submit" aria-label="Send message" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 15V5m-4 4 4-4 4 4"/></svg></button></span></div>
+        </form>
+        <p class="disclaimer">PyPal uses a curated knowledge base and can make mistakes. Double-check anything important.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

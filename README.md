@@ -1,18 +1,20 @@
 # Personal Python Question-Answering Chatbot
 
-A lightweight command-line chatbot that answers common Python programming questions from a predefined knowledge base. It uses only the Python standard library, so no API key or package installation is needed.
+A polished, responsive local web chatbot that answers common Python programming questions from a predefined knowledge base. It uses only the Python standard library, so no API key or package installation is needed.
 
 ## Requirements
 
 - Python 3.10 or newer
 
-## Run
+## Run the web app
 
 ```bash
-python3 chatbot.py
+python3 server.py
 ```
 
-Type a question at the `You:` prompt. Type `quit`, `exit`, or `q` to end the session. You can also import `find_answer` from `chatbot.py` and call it from another Python program.
+Open [http://127.0.0.1:8765](http://127.0.0.1:8765) in your browser. Ask questions in the chat box, use a suggested prompt, or choose a topic from the sidebar. Press Enter to send and Shift+Enter for a new line. Stop the server with Ctrl+C.
+
+The original terminal interface remains available with `python3 chatbot.py`.
 
 ## Topics covered
 
