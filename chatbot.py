@@ -1008,10 +1008,10 @@ KNOWLEDGE_BASE += tuple(
         answer,
         tuple(re.findall(r"[a-z0-9_]+", question.lower())),
     )
-    for question, answer in API_KNOWLEDGE[:-6]
+    for question, answer in API_KNOWLEDGE
 )
-if len(KNOWLEDGE_BASE) != 2000:
-    raise RuntimeError(f"Expected 2000 knowledge entries, found {len(KNOWLEDGE_BASE)}")
+if len(KNOWLEDGE_BASE) != 2006:
+    raise RuntimeError(f"Expected 2006 knowledge entries, found {len(KNOWLEDGE_BASE)}")
 
 VISUALS_BY_QUESTION = {
     "How do I search a rotated sorted array?": "binary-search",
