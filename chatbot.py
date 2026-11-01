@@ -655,9 +655,54 @@ def merge_intervals(intervals):
     KnowledgeEntry("Is eval safe in Python?", "Avoid `eval()` and `exec()` on untrusted input: they can execute arbitrary Python code. Use safer parsers such as `json.loads()` for JSON or validate input against the exact format you expect.", ("eval", "exec", "security", "unsafe", "untrusted"), ("eval security", "execute a string")),
     KnowledgeEntry("How do I use Python's interactive shell?", "Run `python3` in a terminal to open the interactive interpreter, where you can try expressions one at a time. Use `help(str)` or `dir(object)` to explore. Exit with `exit()` or Ctrl+D on macOS/Linux.", ("interactive", "shell", "repl", "interpreter", "help"), ("python repl", "interactive interpreter")),
     KnowledgeEntry(
+        "How do I implement binary search in Python?",
+        "Binary search needs sorted data. Keep a half-open search interval `[left, right)`; this lower-bound version returns the first index whose value is at least the target, or `len(values)` if none exists:\n\n```python\ndef lower_bound(values, target):\n    left, right = 0, len(values)\n    while left < right:\n        middle = (left + right) // 2\n        if values[middle] < target:\n            left = middle + 1\n        else:\n            right = middle\n    return left\n```\nIt takes O(log n) time.",
+        ("binary", "search", "implement", "implementation", "code", "lower", "bound", "sorted", "python"), ("binary search implementation", "binary search code", "write binary search in python", "lower bound search", "implement binary search"),
+    ),
+    KnowledgeEntry(
+        "How do I implement Dijkstra's algorithm in Python?",
+        "Represent a weighted graph as `node: [(neighbor, weight), ...]`. Use a min-heap, ignore stale heap entries, and only use Dijkstra when all weights are nonnegative:\n\n```python\nfrom heapq import heappop, heappush\nfrom itertools import count\n\ndef dijkstra(graph, source):\n    distances = {source: 0}\n    order = count()\n    heap = [(0, next(order), source)]\n    while heap:\n        distance, _, node = heappop(heap)\n        if distance != distances[node]:\n            continue\n        for neighbor, weight in graph.get(node, []):\n            candidate = distance + weight\n            if candidate < distances.get(neighbor, float('inf')):\n                distances[neighbor] = candidate\n                heappush(heap, (candidate, next(order), neighbor))\n    return distances\n```",
+        ("dijkstra", "implement", "implementation", "code", "python", "heap", "weighted", "distance", "shortest"), ("dijkstra implementation", "dijkstra code", "write dijkstra in python", "implement dijkstra"),
+    ),
+    KnowledgeEntry(
+        "How do I implement topological sorting in Python?",
+        "Kahn's algorithm repeatedly emits vertices with indegree zero. If fewer than all vertices are emitted, the graph has a cycle and is not a DAG:\n\n```python\nfrom collections import deque\n\ndef topological_order(graph):\n    nodes = set(graph)\n    for neighbors in graph.values():\n        nodes.update(neighbors)\n    indegree = {node: 0 for node in nodes}\n    for neighbors in graph.values():\n        for neighbor in neighbors:\n            indegree[neighbor] += 1\n    ready = deque(node for node in nodes if indegree[node] == 0)\n    order = []\n    while ready:\n        node = ready.popleft()\n        order.append(node)\n        for neighbor in graph.get(node, []):\n            indegree[neighbor] -= 1\n            if indegree[neighbor] == 0:\n                ready.append(neighbor)\n    if len(order) != len(nodes):\n        raise ValueError('graph contains a cycle')\n    return order\n```",
+        ("topological", "sort", "sorting", "implement", "implementation", "code", "python", "kahn", "dag", "indegree"), ("topological sort implementation", "topological sorting code", "kahn's algorithm in python", "implement topological sorting"),
+    ),
+    KnowledgeEntry(
+        "How do I implement union-find in Python?",
+        "Store a parent and component size for each item. Path halving compresses paths during `find`; union by size keeps trees shallow. Operations are nearly constant amortized time:\n\n```python\nclass DisjointSet:\n    def __init__(self, n):\n        self.parent = list(range(n))\n        self.size = [1] * n\n\n    def find(self, x):\n        while x != self.parent[x]:\n            self.parent[x] = self.parent[self.parent[x]]\n            x = self.parent[x]\n        return x\n\n    def union(self, a, b):\n        a, b = self.find(a), self.find(b)\n        if a == b:\n            return False\n        if self.size[a] < self.size[b]:\n            a, b = b, a\n        self.parent[b] = a\n        self.size[a] += self.size[b]\n        return True\n```",
+        ("union", "find", "dsu", "disjoint", "implement", "implementation", "code", "python", "parent", "component"), ("union-find implementation", "disjoint set code", "implement dsu in python", "implement union-find"),
+    ),
+    KnowledgeEntry(
+        "How do I generate all subsets with backtracking?",
+        "At each position, choose to exclude or include the item, then undo the choice before exploring the next branch. There are 2ⁿ subsets, so outputting them already takes O(n·2ⁿ) total time:\n\n```python\ndef subsets(values):\n    result, chosen = [], []\n\n    def visit(index):\n        if index == len(values):\n            result.append(chosen.copy())\n            return\n        visit(index + 1)\n        chosen.append(values[index])\n        visit(index + 1)\n        chosen.pop()\n\n    visit(0)\n    return result\n```",
+        ("subset", "subsets", "backtracking", "generate", "combination", "include", "exclude", "recursion"), ("generate all subsets", "subsets with backtracking", "power set in python"),
+    ),
+    KnowledgeEntry(
+        "How do I find the longest palindromic substring?",
+        "Expand around every possible center. There are centers between characters and on characters because palindromes can have even or odd length. Each expansion checks equal characters; the simple method takes O(n²) time and O(1) extra space.",
+        ("longest", "palindrome", "palindromic", "substring", "expand", "center", "string"), ("longest palindrome substring", "longest palindromic substring", "palindrome substring problem"),
+    ),
+    KnowledgeEntry(
+        "What does if __name__ == '__main__' do?",
+        "A module's `__name__` is set to `'__main__'` when that file is run directly, and to its module name when imported. Put command-line startup code inside `if __name__ == '__main__':` so importing the module does not run the program automatically.",
+        ("name", "main", "module", "script", "import", "run", "guard"), ("name main guard", "main guard in python", "if name main"),
+    ),
+    KnowledgeEntry(
+        "How do I profile Python performance?",
+        "Measure before optimizing. Use `timeit` for a small expression or benchmark, and `python -m cProfile -s cumulative your_script.py` to find where a whole program spends time. Profile representative inputs; a faster microbenchmark may not improve the real workload.",
+        ("profile", "profiling", "performance", "timeit", "cprofile", "benchmark", "optimize"), ("profile python code", "measure python performance", "cprofile python"),
+    ),
+    KnowledgeEntry(
+        "What is the Python GIL?",
+        "In a standard GIL-enabled CPython build, the Global Interpreter Lock allows only one thread at a time to execute Python bytecode. Threads can still help I/O-bound tasks because they wait concurrently; CPU-heavy Python work often benefits more from processes or native code that releases the GIL. Free-threaded Python builds have different behavior.",
+        ("gil", "global", "interpreter", "lock", "thread", "cpu", "io", "parallelism"), ("global interpreter lock", "python threads gil", "gil in python"),
+    ),
+    KnowledgeEntry(
         "What are common Python collection operation costs?",
         "Typical costs: list indexing is O(1), append is O(1) amortized, and inserting/removing at the front is O(n). Dict and set lookup are O(1) average. `deque` append/pop at either end are O(1). A heap peek is O(1), while push/pop are O(log n). Exact costs depend on the operation and implementation.",
-        ("collection", "operation", "complexity", "cost", "list", "dict", "set", "deque", "heap"), ("python data structure time complexity", "complexities of python collections", "list dict set complexity"),
+        ("collection", "operation", "complexity", "cost", "list", "append", "dict", "set", "deque", "heap"), ("python data structure time complexity", "complexities of python collections", "list dict set complexity", "time complexity of list append", "time complexity of python list append", "list append complexity"),
     ),
     KnowledgeEntry(
         "How do I implement BFS in Python?",
@@ -737,6 +782,11 @@ def merge_intervals(intervals):
 )
 
 VISUALS_BY_QUESTION = {
+    "How do I implement binary search in Python?": "binary-search",
+    "How do I implement Dijkstra's algorithm in Python?": "dijkstra",
+    "How do I implement topological sorting in Python?": "topological",
+    "How do I implement union-find in Python?": "union-find",
+    "How do I generate all subsets with backtracking?": "backtracking",
     "How do I approach a data-structures problem?": "workflow",
     "What is an array in Python?": "array",
     "What is a hash table or map?": "hash-table",
@@ -825,6 +875,7 @@ def normalize(text: str) -> list[str]:
     words = re.findall(r"[a-z0-9_]+", text)
     normalized = []
     for word in words:
+        word = word.strip("_") or word
         if word in {"args", "kwargs", "itertools", "functools"}:
             pass  # These words end in s but are not ordinary English plurals.
         elif word == "tries":
