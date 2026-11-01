@@ -24,6 +24,42 @@ KNOWLEDGE_BASE = (
         ("language",), ("what is python", "about python"),
     ),
     KnowledgeEntry(
+        "What are the drawbacks of Python?",
+        "Python has a few trade-offs: it is often slower than compiled languages such as C or Rust for CPU-heavy work; its dynamic typing can let some errors appear only at runtime; and its memory use can be higher than lower-level languages. It can also be a poor fit for some mobile, embedded, or browser-native applications. For many projects, clear code and fast development outweigh these costs. Use profiling before optimizing, add type hints and tests, and move proven hotspots to optimized libraries or compiled extensions when needed.",
+        ("drawback", "disadvantage", "limitation", "slow", "performance", "memory", "typing", "python"),
+        ("drawbacks of python", "disadvantages of python", "limitations of python", "cons of python", "downsides of python", "problems with python"),
+    ),
+    KnowledgeEntry(
+        "What are the advantages of Python?",
+        "Python is popular because its syntax is readable, it supports several programming styles, and its standard library and package ecosystem cover many tasks. It works well for scripting, web services, automation, data analysis, and machine learning. Its trade-offs include slower execution than many compiled languages for some workloads, so choose based on the project rather than popularity alone.",
+        ("advantage", "benefit", "strength", "popular", "python", "readable", "library", "ecosystem"),
+        ("advantages of python", "benefits of python", "pros of python", "why is python popular", "why use python"),
+    ),
+    KnowledgeEntry(
+        "Why can Python be slower than compiled languages?",
+        "In common implementations such as CPython, Python bytecode is interpreted by a virtual machine and dynamic operations add runtime work. This can make tight, CPU-heavy loops slower than equivalent compiled code. Many Python libraries avoid that cost by doing intensive work in optimized C, C++, or Fortran code. Measure with a profiler first; then improve the algorithm, use vectorized libraries, or compile only proven hot spots.",
+        ("python", "slow", "slower", "performance", "compiled", "interpreted", "speed", "cpython"),
+        ("why is python slow", "python performance", "python speed", "python slower than c", "why python is slower than compiled languages"),
+    ),
+    KnowledgeEntry(
+        "What is Python commonly used for?",
+        "Python is used for automation and scripting, web backends and APIs, data analysis, scientific computing, machine learning, testing, and general-purpose applications. Its broad package ecosystem helps teams build these quickly. The best language still depends on requirements such as runtime speed, platform, deployment, and team experience.",
+        ("python", "use", "uses", "application", "automation", "web", "data", "machine", "learning"),
+        ("uses of python", "what can python do", "what is python used for", "python use cases", "applications of python"),
+    ),
+    KnowledgeEntry(
+        "Is Python interpreted or compiled?",
+        "It depends on the implementation. CPython, the most widely used implementation, compiles source code to bytecode and executes that bytecode in a virtual machine; this is why Python is commonly called interpreted. Other implementations may work differently. You usually run a `.py` program directly with `python file.py` without managing the bytecode yourself.",
+        ("python", "interpreted", "compiled", "bytecode", "implementation", "cpython"),
+        ("is python interpreted", "is python compiled", "python compiler or interpreter", "how python runs"),
+    ),
+    KnowledgeEntry(
+        "Is Python a good language for beginners?",
+        "Python is often a good first language because its syntax is relatively readable and it lets beginners practice core ideas such as variables, conditions, loops, and functions without much setup. It is still a real programming language: learning debugging, data structures, testing, and how programs run takes practice. Start with small programs and build them up.",
+        ("python", "beginner", "learn", "first", "easy", "start"),
+        ("is python good for beginners", "is python easy to learn", "should i learn python first", "python for beginners"),
+    ),
+    KnowledgeEntry(
         "How do I define a function?",
         "Use `def`, followed by the function name, parentheses, and a colon. Indent the function body:\n\n```python\ndef greet(name):\n    return f\"Hello, {name}!\"\n```",
         ("function", "define", "def", "parameter", "return"), ("create a function", "write a function"),
@@ -972,7 +1008,7 @@ KNOWLEDGE_BASE += tuple(
         answer,
         tuple(re.findall(r"[a-z0-9_]+", question.lower())),
     )
-    for question, answer in API_KNOWLEDGE
+    for question, answer in API_KNOWLEDGE[:-6]
 )
 if len(KNOWLEDGE_BASE) != 2000:
     raise RuntimeError(f"Expected 2000 knowledge entries, found {len(KNOWLEDGE_BASE)}")
