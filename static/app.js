@@ -4,7 +4,24 @@ const sendButton = document.querySelector('#send-button');
 const messages = document.querySelector('#messages');
 const welcome = document.querySelector('#welcome');
 const count = document.querySelector('#char-count');
+const themeToggle = document.querySelector('#theme-toggle');
 let busy = false;
+
+function setTheme(theme) {
+  const isDark = theme !== 'light';
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  themeToggle.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+  themeToggle.innerHTML = isDark
+    ? '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.8v2m0 12.4v2M1.8 10h2m12.4 0h2M4.2 4.2l1.4 1.4m8.8 8.8 1.4 1.4m0-11.6-1.4 1.4m-8.8 8.8-1.4 1.4"/></svg>'
+    : '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M17.2 12.4A7.5 7.5 0 0 1 7.6 2.8a7.6 7.6 0 1 0 9.6 9.6Z"/></svg>';
+}
+setTheme(localStorage.getItem('pypal-theme') || 'dark');
+themeToggle.addEventListener('click', () => {
+  const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('pypal-theme', nextTheme);
+  setTheme(nextTheme);
+});
 
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
